@@ -1,0 +1,59 @@
+image: node:14
+
+stages:
+  - build
+  - deploy_dev
+  - deploy_production
+build:
+  stage: build
+  variables:
+    API_BASE_URL: '$$API_BASE_URL_DEV'
+    PREFIX_V1: 'v1/'
+  cache:
+    key:
+      files:
+        - package.json
+    paths:
+      - node_modules/
+  script:
+    - echo "=== Building deploy package ==="
+    - npm install
+    - npm run build
+    - echo "=== Build successful ==="
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - dist
+deploy_dev:
+  image: alpine
+  stage: deploy_dev
+  before_script:
+    - echo "=== Start deploy develop ==="
+    - which rsync || ( apk update && apk add openssh && apk add rsync )
+  script:
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY_DEV" >> ~/.ssh/id_dsa
+    - chmod 700 ~/.ssh/id_dsa
+    - echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config
+    - rsync -rav --delete dist/ minhtd@$DEV_ENDPOINT:$DEV_PATH
+    - echo "=== Finish deploy develop ==="
+  environment:
+    name: production
+    url: https://dev.wiki.taroapp.net
+  rules:
+    - if: $CI_COMMIT_BRANCH == 'develop'
+
+
+deploy_production:
+  image: alpine
+  stage: deploy_production
+  script:
+    - echo "=== Start deploy production ==="
+    - echo "=== Finish deploy production ==="
+  environment:
+    name: production
+    url: https://wiki.taroapp.net
+  only:
+    - master
+  allow_failure: false
+  when: manual
