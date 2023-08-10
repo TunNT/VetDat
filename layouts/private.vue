@@ -15,7 +15,7 @@
           "
         >
           <Logo />
-          <span v-show="!isCollapse">VeDat Admin</span>
+          <span v-show="!isCollapse">VetDat</span>
         </div>
       </nuxt-link>
       <el-menu
@@ -30,54 +30,20 @@
       >
         <el-submenu class="private-layout__menu-bar__submenu" index="1">
           <template slot="title">
-            <i class="el-icon-message"></i>
-            <span slot="title"> Xem bài </span>
-          </template>
-          <nuxt-link to="/card-deck-list" name="card">
-            <el-menu-item index="1-1"> Danh sách lá bài </el-menu-item>
-          </nuxt-link>
-          <nuxt-link to="/deck-list">
-            <el-menu-item index="1-2"> Danh sách bộ bài </el-menu-item>
-          </nuxt-link>
-        </el-submenu>
-        <el-submenu
-          class="private-layout__menu-bar__submenu"
-          index="2"
-          v-if="isAdmin"
-        >
-          <template slot="title">
-            <i class="el-icon-user"></i>
-            <span slot="title"> Người dùng </span>
-          </template>
-          <nuxt-link to="/users">
-            <el-menu-item index="2-1"> Danh sách người dùng </el-menu-item>
-          </nuxt-link>
-        </el-submenu>
-        <el-submenu
-          class="private-layout__menu-bar__submenu"
-          index="3"
-          v-if="isAdmin || isReader"
-        >
-          <template slot="title">
-            <i class="el-icon-setting"></i>
-            <span slot="title"> Nhập bài mới </span>
-          </template>
-          <nuxt-link to="/card-deck-form">
-            <el-menu-item index="3-1">Nhập lá bài</el-menu-item>
-          </nuxt-link>
-          <nuxt-link to="/deck-form">
-            <el-menu-item index="3-2">Nhập bộ bài</el-menu-item>
-          </nuxt-link>
-        </el-submenu>
-        <el-submenu class="private-layout__menu-bar__submenu" index="4">
-          <template slot="title">
             <i class="el-icon-menu"></i>
-            <span slot="title">Chức năng</span>
+            <span slot="title"> Quản lí </span>
           </template>
-          <nuxt-link to="/search">
-            <el-menu-item index="4-1"> Wiki taro </el-menu-item>
+          <nuxt-link to="/site">
+            <el-menu-item index="1-1"> Site </el-menu-item>
+          </nuxt-link>
+          <nuxt-link to="/users" name="card">
+            <el-menu-item index="1-2"> Chủ sở hữu </el-menu-item>
+          </nuxt-link>
+          <nuxt-link to="/pet">
+            <el-menu-item index="1-3"> Thú cưng </el-menu-item>
           </nuxt-link>
         </el-submenu>
+      
       </el-menu>
     </el-aside>
 
@@ -93,9 +59,9 @@
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="info"
-                >Thông tin cá nhân</el-dropdown-item
-              >
+              <!-- <el-dropdown-item command="info"
+                >Your info</el-dropdown-item
+              > -->
               <el-dropdown-item command="logout">Thoát</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>

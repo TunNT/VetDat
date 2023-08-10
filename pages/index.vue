@@ -105,7 +105,7 @@ export default {
                   title: "Đăng nhập thành công!",
                   type: "success",
                 });
-                this.$router.push("/card-deck-list");
+                this.$router.push("/site");
               }
             })
             .catch((error) => {

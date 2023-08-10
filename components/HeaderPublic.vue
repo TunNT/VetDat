@@ -4,8 +4,7 @@
       cols="12"
       class="d-flex col-12 align-items-center justify-content-center mb-3"
     >
-      <Logo width="50px" height="45px" />
-      <h1 class="title">VeDat Admin</h1>
+      <h1 class="title">VetDat admin</h1>
     </b-col>
   </nuxt-link>
 </template>

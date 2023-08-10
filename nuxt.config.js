@@ -11,6 +11,7 @@ export default {
         }
     },
     ssr: false,
+    target: 'static',
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
         title: 'VetDat',
@@ -23,7 +24,7 @@ export default {
             { hid: 'description', name: 'description', content: '' }
         ],
         link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+            { rel: 'icon', type: 'image/x-icon', href: 'logos.jpg' }
         ]
     },
 
@@ -65,7 +66,7 @@ export default {
 
     axios: {
         proxy: true,
-        baseURL: process.env.API_BASE_URL,
+        baseURL: "https://chip.techzpet.com/",
         https: process.env.NODE_ENV === 'production' ? true : false,
         credentials: true,
         retry: { retries: 3 },
@@ -97,10 +98,10 @@ export default {
     },
 
     proxy: {
-        '/api/': {
-            target: process.env.API_BASE_URL,
+        '/admin': {
+            target: "https://chip.techzpet.com",
             //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
-            pathRewrite: { '^/api/': `${process.env.PREFIX_V1}` },
+            pathRewrite: { '^/admin': '/api-admin' },
         },
     }
 

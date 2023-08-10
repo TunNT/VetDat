@@ -6,8 +6,8 @@ const actions = {
         commit(MutationTypes.SET_LOADING, true);
         let response = {}
         try {
-            response = await this.$axios.$post('/api/auth/login', {
-                codeID,
+            response = await this.$axios.$post('/admin/login', {
+                email: codeID,
                 password
             })
             const { data, error } = response;
