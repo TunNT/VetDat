@@ -103,6 +103,11 @@ export default {
             //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
             pathRewrite: { '^/admin': '/api-admin' },
         },
+        '/site': {
+            target: "https://chip.techzpet.com",
+            //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
+            pathRewrite: { '^/site': '/api-site' },
+        },
     }
 
 }

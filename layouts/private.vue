@@ -36,11 +36,23 @@
           <nuxt-link to="/site">
             <el-menu-item index="1-1"> Site </el-menu-item>
           </nuxt-link>
-          <nuxt-link to="/users" name="card">
-            <el-menu-item index="1-2"> Chủ sở hữu </el-menu-item>
-          </nuxt-link>
           <nuxt-link to="/pet">
-            <el-menu-item index="1-3"> Thú cưng </el-menu-item>
+            <el-menu-item index="1-2"> Thú cưng </el-menu-item>
+          </nuxt-link>
+          <nuxt-link to="/owner" name="card">
+            <el-menu-item index="1-3"> Chủ sở hữu </el-menu-item>
+          </nuxt-link>
+        </el-submenu>
+        <el-submenu class="private-layout__menu-bar__submenu" index="2">
+          <template slot="title">
+            <i class="el-icon-menu"></i>
+            <span slot="title"> Quản lí (Site)</span>
+          </template>
+          <nuxt-link to="/pet-site">
+            <el-menu-item index="2-1"> Thú cưng </el-menu-item>
+          </nuxt-link>
+          <nuxt-link to="/owner-site" name="card">
+            <el-menu-item index="2-2"> Chủ sở hữu </el-menu-item>
           </nuxt-link>
         </el-submenu>
       

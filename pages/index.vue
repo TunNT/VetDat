@@ -67,7 +67,7 @@ export default {
         codeID: [
           {
             required: true,
-            message: "Vui lòng nhập email hoặc số điện thoại",
+            message: "Vui lòng nhập email",
             trigger: "blur",
           },
         ],

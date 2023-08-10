@@ -1,10 +1,10 @@
 const state = () => ({
-  me: {},
+  siteMe: {},
   permissions: [],
-  canEdit: false,
-  canDelete: false,
+  siteCanEdit: false,
+  siteCanDelete: false,
   loading: false,
-  isAdmin: 0,
+  isSite: 0,
 })
 
 export default state

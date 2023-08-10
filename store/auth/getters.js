@@ -6,7 +6,9 @@ const getters = {
   canEdit: state => state.canEdit,
   canDelete: state => state.canDelete,
   permissions: state => state.permissions,
-  loading: state => state.loading
+  loading: state => state.loading,
+  isAdmin: state => state.isAdmin,
+
 }
 
 export default getters

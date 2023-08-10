@@ -1,0 +1,9 @@
+const ActionTypes = {
+  OWNER_LIST: "OWNER_LIST",
+  OWNER_DETAIL: "OWNER_DETAIL",
+  OWNER_CREATE: "OWNER_CREATE",
+  OWNER_UPDATE: "OWNER_UPDATE",
+  OWNER_DELETE: "OWNER_DELETE"
+};
+
+export default ActionTypes;

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-table
-      :data="Owner.data || []"
+      :data="owners.data || []"
       style="width: 100%"
       @sort-change="onSortNameHandler"
       v-loading="loading"
@@ -10,111 +10,91 @@
       element-loading-background="rgba(0, 0, 0, 0.4)"
     >
       <el-table-column
-        min-width="100"
-        prop="Name"
-        label="Name"
+        min-width="70"
+        prop="name"
+        label="Tên chủ sở hữu"
         sortable="custom"
       ></el-table-column>
 
       <el-table-column
         min-width="100"
-        prop="Status"
-        label="Status"
+        prop="status"
+        label="Trạng thái"
         sortable="custom"
       >
         <template slot-scope="scope">
           {{
-            scope.row.Status === 0
-              ? "not activated "
-              : scope.row.Status === 1
-              ? "Ok"
-              : scope.row.Status === 2
-              ? "demo"
-              : scope.row.Status === 3
-              ? "suspend"
-              : "expired"
+            scope.row.status === 0
+              ? "chưa kích hoạt"
+              : scope.row.status === 1
+              ? "kích hoạt"
+              : scope.row.status === 2
+              ? "Thử nghiệm"
+              : scope.row.status === 3
+              ? "Trì hoãn"
+              : "Hết hạn"
           }}
         </template>
       </el-table-column>
 
       <el-table-column
         min-width="100"
-        prop="Address"
-        label="Address"
+        prop="address"
+        label="Địa chỉ"
         sortable="custom"
       ></el-table-column>
 
       <el-table-column
         min-width="100"
-        prop="Phone"
-        label="Phone"
+        prop="phone"
+        label="Số điện thoại"
         sortable="custom"
       ></el-table-column>
 
       <el-table-column
         min-width="100"
-        prop="Email"
-        label="Email"
+        prop="name"
+        label="Thuộc site"
         sortable="custom"
-      ></el-table-column>
+      >
+      <template slot-scope="scope">
+        {{scope.row.site.name}}
+        </template>
+    </el-table-column>
+    <el-table-column
+        min-width="100"
+        prop="contact"
+        label="Liên hệ của site"
+        sortable="custom"
+      >
+      <template slot-scope="scope">
+        {{scope.row.site.contact}}
+        </template>
+    </el-table-column>
 
       <el-table-column align="right" width="250">
         <template slot="header">
           <SearchInput
-            :placeholder="'Type to search'"
-            :clearable="true"
-            @onChangeHandler="onChangeHandler"
-          />
-        </template>
-        <template slot-scope="scope">
-          <el-button
-            size="mini"
-            class="btn-info"
-            @click="handleEdit(scope.$index, scope.row)"
-            >More infomation</el-button
-          >
-          <el-button
-            size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >Delete</el-button
-          >
-        </template>
-      </el-table-column>
-
-      <!-- <el-table-column
-        min-width="250"
-        prop="name"
-        label="Tên"
-        sortable="custom"
-      >
-        <span slot-scope="scope">
-          {{ scope.row | MapFullname }}
-        </span>
-      </el-table-column> -->
-      <!-- <el-table-column align="right" width="250">
-        <template slot="header">
-          <SearchInput
-            :placeholder="'Type to search'"
+            :placeholder="'Nhập để tìm kiếm'"
             :clearable="true"
             @onChangeHandler="onChangeHandler"
           />
         </template>
         <template slot-scope="scope">
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >Edit</el-button
+            >Sửa</el-button
           >
           <el-button
             size="mini"
             type="danger"
             @click="handleDelete(scope.$index, scope.row)"
-            >Delete</el-button
+            >Xóa</el-button
           >
         </template>
-      </el-table-column> -->
+      </el-table-column>
     </el-table>
 
-    <div class="d-flex justify-content-end p-2">
+    <!-- <div class="d-flex justify-content-end p-2">
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -125,26 +105,15 @@
         :total="+Owner.sizeDocuments"
       >
       </el-pagination>
-    </div>
+    </div> -->
     <YesNoDialog
       :dialogVisible="showDeleteDialog"
       :onCancelHandler="onCancelDeleteHandler"
       :onSubmitHandler="onSubmitDeleteHandler"
-      :msgNotify="'Do you want to delete this user?'"
-      :title="'Delete user'"
+      :msgNotify="'Bạn có muốn xóa người sở hữu này?'"
+      :title="'Xóa chủ sở hữu'"
     />
 
-    <YesNoDialog
-      :dialogVisible="showEditDialog"
-      :onCancelHandler="onCancelEditHandler"
-      :onSubmitHandler="onSubmitEditHandler"
-      :title="`Owner description`"
-      :contentLabel="'Label'"
-      :options="roles"
-      :defaultRole="selectedUser.taro_role"
-      :submitType="'primary'"
-      :submitText="'Submit'"
-    />
   </div>
 </template>
 <style>
@@ -179,117 +148,27 @@ export default {
   },
   data() {
     return {
-      Owner: {
-        data: [
-          {
-            OwnerID: 1,
-            Status: 1,
-            StatusDate: "",
-            SiteID: 1,
-            ModDate: "",
-            ModID: "",
-            Name: "trung",
-            Address: "Da Nang",
-            Phone: "0847410803",
-            Email: "trung@gmail.com",
-            Notes: "customer"
-          },
-          {
-            OwnerID: 2,
-            Status: 2,
-            StatusDate: "",
-            SiteID: 1,
-            ModDate: "",
-            ModID: "",
-            Name: "trung",
-            Address: "Da Nang",
-            Phone: "0847410803",
-            Email: "trung@gmail.com",
-            Notes: "customer"
-          },
-          {
-            OwnerID: 3,
-            Status: 3,
-            StatusDate: "",
-            SiteID: 1,
-            ModDate: "",
-            ModID: "",
-            Name: "trung",
-            Address: "Da Nang",
-            Phone: "0847410803",
-            Email: "trung@gmail.com",
-            Notes: "customer"
-          },
-          {
-            OwnerID: 4,
-            Status: 3,
-            StatusDate: "",
-            SiteID: 1,
-            ModDate: "",
-            ModID: "",
-            Name: "trung",
-            Address: "Da Nang",
-            Phone: "0847410803",
-            Email: "trung@gmail.com",
-            Notes: "customer"
-          },
-          {
-            OwnerID: 5,
-            Status: 2,
-            StatusDate: "",
-            SiteID: 1,
-            ModDate: "",
-            ModID: "",
-            Name: "trung",
-            Address: "Da Nang",
-            Phone: "0847410803",
-            Email: "trung@gmail.com",
-            Notes: "customer"
-          }
-        ],
-        sizeDocuments: 5,
-        currentPage: 1
-      },
       search: "",
       currentPage: 1,
       showDeleteDialog: false,
       showEditDialog: false,
       pagination: {
-        page: 1,
-        number: 10,
-        field: "",
-        order: "",
         keyword: ""
       },
       selectedUser: {},
-      roles: [
-        // TODO: define constant or get list using API
-        {
-          label: "a",
-          value: 1
-        },
-        {
-          label: "b",
-          value: 2
-        },
-        {
-          label: "c",
-          value: 3
-        }
-      ]
     };
   },
   computed: {
     ...mapGetters({
-      loading: "user/loading",
-      users: "user/users"
+      loading: "owner/loading",
+      owners: "owner/owners"
     })
   },
   methods: {
     ...mapActions({
-      getUserList: "user/USER_LIST",
-      updateUserRole: "user/USER_UPDATE",
-      deleteUser: "user/USER_DELETE"
+      getOwnerList: "owner/OWNER_LIST",
+      updateOwnerRole: "owner/OWNER_UPDATE",
+      deleteOwner: "owner/OWNER_DELETE"
     }),
     onChangeHandler(val) {
       this.pagination.keyword = val;
@@ -397,14 +276,14 @@ export default {
   watch: {
     pagination: {
       handler(val) {
-        this.getUserList(_.pickBy(val, value => value));
+        this.getOwnerList(_.pickBy(val, value => value));
       },
       deep: true
     }
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.getUserList(_.pickBy(vm.pagination, value => value));
+      vm.getOwnerList(_.pickBy(vm.pagination, value => value));
     });
   }
 };
