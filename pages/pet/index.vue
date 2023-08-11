@@ -60,6 +60,10 @@
                 <span class="field-label">Ghi chú:</span>
                 <span class="field-value">{{ pets.notes }}</span>
               </li>
+              <li class="field-item">
+                <span class="field-label">Thời điểm sinh:</span>
+                <span class="field-value">{{ pets.petDob | FormatDay}}</span>
+              </li>
             </ul>
           </b-col>
            <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
@@ -127,6 +131,10 @@
               <li class="field-item">
                 <span class="field-label">Địa chỉ:</span>
                 <span class="field-value">{{ pets.site.address }}</span>
+              </li>
+              <li class="field-item">
+                <span class="field-label">Liên hệ:</span>
+                <span class="field-value">{{ pets.site.contact }}</span>
               </li>
               <li class="field-item">
                 <span class="field-label">Số điện thoại:</span>

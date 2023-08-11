@@ -45,8 +45,8 @@ const actions = {
         return response
     },
 
-    async [ActionTypes.AUTH_LOGOUT]({ commit }) {
-        commit(MutationTypes.RESET)
+    async [ActionTypes.AUTH_SITE_LOGOUT]({ commit }) {
+        commit(MutationTypes.RESET_SITE)
     }
 }
 

@@ -1,6 +1,10 @@
 <template>
-    <div>
-      <el-table
+  <div>
+    <el-button size="mini" class="add-btn col-2" @click="redirectAdd">
+      <i class="el-icon-plus"></i>
+      <span class="add-btn-text"> Thêm thú cưng</span>
+    </el-button>
+    <el-table
       :data="petSites.data || []"
       style="width: 100%"
       @sort-change="onSortNameHandler"
@@ -22,7 +26,7 @@
         label="Trạng thái"
         sortable="custom"
       >
-        <template slot-scope="scope">
+        <!-- <template slot-scope="scope">
           {{
             scope.row.status === 0
               ? "chưa kích hoạt"
@@ -34,7 +38,7 @@
               ? "Trì hoãn"
               : "Hết hạn"
           }}
-        </template>
+        </template> -->
       </el-table-column>
 
       <el-table-column
@@ -60,25 +64,36 @@
 
       <el-table-column
         min-width="100"
+        prop="petDob"
+        label="Năm tuổi"
+        sortable="custom"
+      >
+        <template slot-scope="scope">
+          {{ scope.row.petDob | FormatDay }}
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        min-width="100"
         prop="name"
         label="Chủ sở hữu"
         sortable="custom"
       >
-      <template slot-scope="scope">
-        {{scope.row.owner.name}}
+        <template slot-scope="scope">
+          {{ scope.row.owner.name }}
         </template>
-    </el-table-column>
+      </el-table-column>
 
-    <el-table-column
+      <el-table-column
         min-width="100"
         prop="phone"
         label="Phone(chủ sở hữu)"
         sortable="custom"
       >
-      <template slot-scope="scope">
-        {{scope.row.owner.phone}}
+        <template slot-scope="scope">
+          {{ scope.row.owner.phone }}
         </template>
-    </el-table-column>
+      </el-table-column>
 
       <el-table-column align="right" width="250">
         <template slot="header">
@@ -101,247 +116,371 @@
         </template>
       </el-table-column>
     </el-table>
-      <YesNoDialog
-        :dialogVisible="showDeleteDialog"
-        :onCancelHandler="onCancelDeleteHandler"
-        :onSubmitHandler="onSubmitDeleteHandler"
-        :msgNotify="'Do you want to delete this user?'"
-        :title="'Delete user'"
-      />
-    </div>
-  </template>
-  <style>
-  .field-label-title {
-    font-size: 24px;
-  }
-  .title-content-pet {
-    width: 100%;
-  }
-  .main-container-empty {
-    margin-top: 50px;
-    text-align: center;
-  }
-  .main-container {
-    margin-top: 50px;
-    text-align: center;
-    background-color: #f5f5f5;
-    box-shadow: 0px 0px 5px 1px #f1eaea;
-    padding: 50px;
-  }
-  .field-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .field-item {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  
-  .field-label {
-    font-weight: bold;
-    margin-right: 10px;
-  }
-  
-  .field-value {
-    font-style: italic;
-  }
-  .search-pet {
-    margin-top: 20px;
-  }
-  .search-pet .el-input__inner {
-    height: 50px;
-  }
-  .el-header {
-    background-color: #b3c0d1;
-    color: #333;
-    line-height: 60px;
-  }
-  .btn-info {
-    border: none;
-    font-style: italic;
-  }
-  .el-aside {
-    color: #333;
-  }
-  .header-title-pet {
-    text-align: center;
-    margin-top: 25px;
-  }
-  .header-title-pet span {
-    width: 58px;
-    font-family: "Montserrat";
-    font-style: normal;
-    font-weight: 700 !important;
-    font-size: 30px;
-    line-height: 20px;
-    color: #003049 !important;
-    padding-left: 5px;
-  }
-  </style>
-  
-  <script>
-  // lib
-  import { mapGetters, mapActions } from "vuex";
-  import _ from "lodash";
-  
-  // component
-  import SearchInput from "@components/SearchInput";
-  export default {
-    layout: "private",
-    // middleware: "authenticated",
-    // middleware: "permission",
-    components: {
-      SearchInput
-    },
-    data() {
-      return {
-        search: "",
-        currentPage: 1,
-        showDeleteDialog: false,
-        showEditDialog: false,
-        pagination: {
-          keyword: ""
+    <YesNoDialog
+      :dialogVisible="showDeleteDialog"
+      :onCancelHandler="onCancelDeleteHandler"
+      :onSubmitHandler="onSubmitDeleteHandler"
+      :msgNotify="'Do you want to delete this user?'"
+      :title="'Delete user'"
+    />
+    <addPet
+      :dialogVisible="showAddPetDialog"
+      :onCancelHandler="onCancelAddHandler"
+      :onSubmitHandler="onSubmitAddHandler"
+      :itemSelected="addPet"
+      :options="statuses"
+      :optionsPetTriet="optionsPetTriet"
+      :optionsPetType="optionsPetType"
+      :optionsPetSex="optionsPetSex"
+      :listOwner=ownerSites.data
+    />
+  </div>
+</template>
+<style>
+.field-label-title {
+  font-size: 24px;
+}
+.title-content-pet {
+  width: 100%;
+}
+.main-container-empty {
+  margin-top: 50px;
+  text-align: center;
+}
+.main-container {
+  margin-top: 50px;
+  text-align: center;
+  background-color: #f5f5f5;
+  box-shadow: 0px 0px 5px 1px #f1eaea;
+  padding: 50px;
+}
+.field-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.field-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.field-label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.field-value {
+  font-style: italic;
+}
+.search-pet {
+  margin-top: 20px;
+}
+.search-pet .el-input__inner {
+  height: 50px;
+}
+.el-header {
+  background-color: #b3c0d1;
+  color: #333;
+  line-height: 60px;
+}
+.btn-info {
+  border: none;
+  font-style: italic;
+}
+.el-aside {
+  color: #333;
+}
+.header-title-pet {
+  text-align: center;
+  margin-top: 25px;
+}
+.header-title-pet span {
+  width: 58px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 700 !important;
+  font-size: 30px;
+  line-height: 20px;
+  color: #003049 !important;
+  padding-left: 5px;
+}
+</style>
+
+<script>
+// lib
+import { mapGetters, mapActions } from "vuex";
+import _ from "lodash";
+import addPet from "@/components/pet/add";
+
+// component
+import SearchInput from "@components/SearchInput";
+export default {
+  layout: "private",
+  // middleware: "authenticated",
+  // middleware: "permission",
+  components: {
+    SearchInput,
+    addPet
+  },
+  data() {
+    return {
+      search: "",
+      currentPage: 1,
+      showDeleteDialog: false,
+      showEditDialog: false,
+      showAddPetDialog: false,
+      addPet: {},
+      pagination: {
+        keyword: ""
+      },
+      selectedUser: {},
+      statuses: [
+        {
+          label: "chưa kích hoạt",
+          value: 0
         },
-        selectedUser: {}
+        {
+          label: "kích hoạt",
+          value: 1
+        },
+        {
+          label: "thử nghiệm",
+          value: 2
+        },
+        {
+          label: "hoãn lại",
+          value: 3
+        },
+        {
+          label: "hết hạn",
+          value: 4
+        }
+      ],
+      optionsPetTriet: [
+        {
+          label: "chưa xác định",
+          value: 0
+        },
+        {
+          label: "đã triệt sản",
+          value: 1
+        },
+        {
+          label: "chưa triệt sản",
+          value: 2
+        }
+      ],
+      optionsPetType: [
+        {
+          label: "chưa xác định",
+          value: 0
+        },
+        {
+          label: "Chó",
+          value: 1
+        },
+        {
+          label: "Mèo",
+          value: 2
+        },
+        {
+          label: "Thỏ",
+          value: 3
+        }
+      ],
+      optionsPetSex: [
+        {
+          label: "chưa xác định",
+          value: 0
+        },
+        {
+          label: "Đực",
+          value: 1
+        },
+        {
+          label: "Cái",
+          value: 2
+        },
+      ]
+    };
+  },
+  computed: {
+    ...mapGetters({
+      loading: "pet/loading",
+      petSites: "pet-site/petSites",
+      ownerSites: "owner-site/ownerSites"
+    }),
+    isPetsEmpty() {
+      return this.pets.length === 0;
+    }
+  },
+  methods: {
+    ...mapActions({
+      getPetSiteList: "pet-site/PET_SITE_LIST",
+      createPet: "pet-site/PET_SITE_CREATE",
+      updatePetRole: "pet-site/PET_UPDATE",
+      deletePet: "pet-site/PET_DELETE",
+      getOwnerSiteList: "owner-site/OWNER_SITE_LIST",
+    }),
+    onChangeHandler(val) {
+      this.pagination.keyword = val;
+    },
+    onCancelAddHandler() {
+      this.showAddPetDialog = false;
+    },
+    onSortNameHandler({ prop, order }) {
+      const sort = {
+        field: order ? prop : "",
+        order: order?.replace("ing", "")
+      };
+      this.pagination = {
+        ...this.pagination,
+        ...sort
       };
     },
-    computed: {
-      ...mapGetters({
-        loading: "pet/loading",
-        petSites: "pet-site/petSites"
-      }),
-      isPetsEmpty() {
-        return this.pets.length === 0;
-      }
-    },
-    methods: {
-      ...mapActions({
-        getPetSiteList: "pet-site/PET_SITE_LIST",
-        updatePetRole: "pet-site/PET_UPDATE",
-        deletePet: "pet-site/PET_DELETE"
-      }),
-      onChangeHandler(val) {
-        this.pagination.keyword = val;
-      },
-      onSortNameHandler({ prop, order }) {
-        const sort = {
-          field: order ? prop : "",
-          order: order?.replace("ing", "")
-        };
-        this.pagination = {
-          ...this.pagination,
-          ...sort
-        };
-      },
-      onSubmitEditHandler(value) {
-        if (!value) return;
-        this.updateUserRole({
-          user_id: this.selectedUser.id,
-          role_id: value
+
+    onSubmitAddHandler(value) {
+      this.createPet(value)
+        .then((result) => {
+          if (result.message ==="common_success") {
+            this.$notify({
+              group: "all",
+              title: "Thêm thành công!",
+              type: "success",
+            });
+            this.getPetSiteList(
+              _.pickBy(this.pagination, (value) => value)
+            );
+            this.showAddPetDialog = false;
+            this.$router.push("/pet-site");
+          } 
         })
-          .then(({ message, error }) => {
-            if (message === "SUCCESS") {
-              this.getUserList(_.pickBy(this.pagination, value => value));
-              this.$notify({
-                group: "all",
-                title: "Cập nhật thành công",
-                type: "success"
-              });
-            } else {
-              this.$notify({
-                group: "all",
-                title: "Cập nhật không thành công",
-                type: "error",
-                text: error
-              });
-            }
-          })
-          .catch(error => {
+        .catch((error) => {
+          this.$notify({
+            group: "all",
+            title: `"Thú cưng"đã tồn tại`,
+            type: "error",
+          });
+        })
+        .finally(() => {
+          this.showAddPetDialog = false;
+        });
+    },
+    onSubmitEditHandler(value) {
+      if (!value) return;
+      this.updateUserRole({
+        user_id: this.selectedUser.id,
+        role_id: value
+      })
+        .then(({ message, error }) => {
+          if (message === "SUCCESS") {
+            this.getUserList(_.pickBy(this.pagination, value => value));
+            this.$notify({
+              group: "all",
+              title: "Cập nhật thành công",
+              type: "success"
+            });
+          } else {
             this.$notify({
               group: "all",
               title: "Cập nhật không thành công",
               type: "error",
               text: error
             });
-          })
-          .finally(() => {
-            this.showEditDialog = false;
+          }
+        })
+        .catch(error => {
+          this.$notify({
+            group: "all",
+            title: "Cập nhật không thành công",
+            type: "error",
+            text: error
           });
-      },
-      onCancelEditHandler() {
-        this.showEditDialog = false;
-      },
-      onCancelDeleteHandler() {
-        this.showDeleteDialog = false;
-      },
-      onBackHome() {
-        this.$router.push("/pet");
-      },
-      onSubmitDeleteHandler() {
-        this.deleteUser(this.selectedUser.id)
-          .then(({ message, error }) => {
-            if (message === "SUCCESS") {
-              this.getUserList(_.pickBy(this.pagination, value => value));
-              this.$notify({
-                group: "all",
-                title: "Xóa thành công",
-                type: "success"
-              });
-            } else {
-              this.$notify({
-                group: "all",
-                title: "Xóa không thành công",
-                type: "error",
-                text: error
-              });
-            }
-          })
-          .catch(error => {
-            if (error !== 404 && error !== 500) {
-              this.$notify({
-                group: "all",
-                title: "Xóa không thành công",
-                type: "error",
-                text: error
-              });
-            }
-          })
-          .finally(() => {
-            this.showDeleteDialog = false;
-          });
-      },
-  
-      handleEdit(_, row) {
-        this.selectedUser = row;
-        this.showEditDialog = true;
-      },
-      handleDelete(_, row) {
-        this.selectedUser = row;
-        this.showDeleteDialog = true;
-      },
-      handleSizeChange(val) {
-        this.pagination.number = val;
-      },
-      handleCurrentChange(val) {
-        this.pagination.page = val;
-      }
+        })
+        .finally(() => {
+          this.showEditDialog = false;
+        });
     },
-    watch: {
-      pagination: {
-        handler(val) {
-          this.getPetSiteList(_.pickBy(val, value => value));
-        },
-        deep: true
-      }
+    onCancelEditHandler() {
+      this.showEditDialog = false;
     },
-    beforeRouteEnter(to, from, next) {
-      next(vm => {
-        vm.getPetSiteList(_.pickBy(vm.pagination, value => value));
-      });
+    onCancelDeleteHandler() {
+      this.showDeleteDialog = false;
+    },
+    onBackHome() {
+      this.$router.push("/pet-site");
+    },
+    onCancelAddHandler() {
+      this.showAddPetDialog = false;
+    },
+    redirectAdd() {
+      (this.addPet = {}), (this.showAddPetDialog = true);
+    },
+    onSubmitDeleteHandler() {
+      this.deleteUser(this.selectedUser.id)
+        .then(({ message, error }) => {
+          if (message === "SUCCESS") {
+            this.getUserList(_.pickBy(this.pagination, value => value));
+            this.$notify({
+              group: "all",
+              title: "Xóa thành công",
+              type: "success"
+            });
+          } else {
+            this.$notify({
+              group: "all",
+              title: "Xóa không thành công",
+              type: "error",
+              text: error
+            });
+          }
+        })
+        .catch(error => {
+          if (error !== 404 && error !== 500) {
+            this.$notify({
+              group: "all",
+              title: "Xóa không thành công",
+              type: "error",
+              text: error
+            });
+          }
+        })
+        .finally(() => {
+          this.showDeleteDialog = false;
+        });
+    },
+
+    handleEdit(_, row) {
+      this.selectedUser = row;
+      this.showEditDialog = true;
+    },
+    handleDelete(_, row) {
+      this.selectedUser = row;
+      this.showDeleteDialog = true;
+    },
+    handleSizeChange(val) {
+      this.pagination.number = val;
+    },
+    handleCurrentChange(val) {
+      this.pagination.page = val;
     }
-  };
-  </script>
-  
+  },
+  watch: {
+    pagination: {
+      handler(val) {
+        this.getPetSiteList(_.pickBy(val, value => value));
+        this.getOwnerSiteList(_.pickBy(val, value => value));
+      },
+      deep: true
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.getPetSiteList(_.pickBy(vm.pagination, value => value));
+      vm.getOwnerSiteList();
+    });
+  }
+};
+</script>

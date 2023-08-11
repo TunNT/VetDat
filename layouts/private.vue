@@ -14,7 +14,6 @@
             py-2
           "
         >
-          <Logo />
           <span v-show="!isCollapse">VetDat</span>
         </div>
       </nuxt-link>
@@ -71,13 +70,12 @@
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <!-- <el-dropdown-item command="info"
-                >Your info</el-dropdown-item
-              > -->
-              <el-dropdown-item command="logout">Thoát</el-dropdown-item>
+              <el-dropdown-item command="info"
+                ></el-dropdown-item
+              >
+              <el-dropdown-item  command="logout">Thoát(A)</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
-          <span>{{ me.name }}</span>
         </div>
       </el-header>
 
@@ -106,9 +104,9 @@ import "element-ui/lib/theme-chalk/display.css";
 export default {
   data() {
     return {
-      ADMIN_ROLE: 3,
-      READER_ROLE: 2,
-      USER_ROLE: 1,
+      ADMIN_ROLE: 1,
+      SITE_ROLE: 2,
+      // USER_ROLE: 1,
       isCollapse: false,
       activedMenu: "1-1",
       windowWidth: 0,
@@ -117,13 +115,14 @@ export default {
   computed: {
     ...mapGetters({
       loading: "auth/loading",
-      me: "auth/me",
+      admin: "auth/isAdmin",
+      site: "auth-site/isSite"
     }),
     isAdmin() {
-      return this.me.taro_role === this.ADMIN_ROLE;
+      return this.admin === this.ADMIN_ROLE;
     },
-    isReader() {
-      return this.me.taro_role === this.READER_ROLE;
+    isSite() {
+      return this.site === this.SITE_ROLE;
     },
   },
   watch: {
@@ -140,6 +139,10 @@ export default {
       switch (command) {
         case "logout":
           this.$store.dispatch("auth/AUTH_LOGOUT");
+          this.$router.push("/");
+          return;
+        case "logoutSite":
+          this.$store.dispatch("auth-site/AUTH_SITE_LOGOUT");
           this.$router.push("/");
           return;
         default:

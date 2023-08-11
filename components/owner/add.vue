@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="`Thêm 1 site`"
+      :title="`Thêm 1 chủ sở hữu`"
       :visible="dialogVisible"
       :before-close="handleClose"
       center
@@ -29,47 +29,34 @@
             </el-select>
           </template>
         </el-form-item>
-        <el-form-item label="Tên đăng nhập:" prop="login">
+
+        <el-form-item label="Tên chủ sở hữu:" prop="name">
           <el-input
             class="group-name"
-            placeholder="Vui lòng nhập tên đăng nhập"
-            v-model="itemSync.login"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item label="Mật khẩu:" prop="password">
-          <el-input
-            class="group-name"
-            placeholder="Vui lòng nhập mật khẩu"
-            v-model="itemSync.password"
-            show-password
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item label="Name:" prop="name">
-          <el-input
-            class="group-name"
-            placeholder="Vui lòng nhập tên"
+            placeholder="Vui lòng nhập tên chủ sở hữu"
             v-model="itemSync.name"
           >
           </el-input>
         </el-form-item>
-        <el-form-item label="Liên hệ:" prop="contact">
-          <el-input
-            class="group-name"
-            placeholder="Vui lòng nhập liên hệ"
-            v-model="itemSync.contact"
-          >
-          </el-input>
-        </el-form-item>
+
         <el-form-item label="Địa chỉ:" prop="address">
           <el-input
             class="group-name"
-            placeholder="Vui lòng nhập địa chỉ"
+            placeholder="Vui lòng nhập dịa chỉ"
             v-model="itemSync.address"
           >
           </el-input>
         </el-form-item>
+
+        <el-form-item label="Email:" prop="email">
+          <el-input
+            class="group-name"
+            placeholder="Vui lòng nhập email"
+            v-model="itemSync.email"
+          >
+          </el-input>
+        </el-form-item>
+
         <el-form-item label="Số điện thoại:" prop="phone">
           <el-input
             class="group-name"
@@ -78,6 +65,7 @@
           >
           </el-input>
         </el-form-item>
+
         <el-form-item label="Thêm mô tả:" prop="notes">
           <el-input
             class="group-name"
@@ -92,7 +80,7 @@
           >Hủy</el-button
         >
         <el-button class="btn-add-group" @click="onPreviousSubmit"
-          >Tạo site</el-button
+          >Tạo chủ sở hữu</el-button
         >
       </span>
     </el-dialog>
@@ -109,10 +97,10 @@
   font-weight: 700;
 }
 .btn-add-group {
-  background-color: #ffc300;
+  background-color: #b3c0d1 !important;
   color: #003049;
   border: none;
-  width: 104px;
+  width: auto!important;
   height: 40px;
   font-size: 13px;
   font-weight: 700;
@@ -194,15 +182,16 @@ export default {
   },
   data() {
     return {
+      datePickerOptionsEndDate: {
+        disabledDate: this.disabledEndDate
+      },
       itemSync: {
         status: 0,
-        login: "",
-        password: "",
         name: "",
-        contact: "",
         address: "",
         phone: "",
-        notes: ""
+        notes: "",
+        email: ""
       },
       rules: {
         status: [
@@ -212,28 +201,7 @@ export default {
             trigger: "blur"
           }
         ],
-        login: [
-          {
-            required: true,
-            message: "Vui lòng không được để trống!",
-            trigger: "blur"
-          }
-        ],
-        password: [
-          {
-            required: true,
-            message: "Vui lòng không được để trống!",
-            trigger: "blur"
-          }
-        ],
         name: [
-          {
-            required: true,
-            message: "Vui lòng không được để trống!",
-            trigger: "blur"
-          }
-        ],
-        contact: [
           {
             required: true,
             message: "Vui lòng không được để trống!",
@@ -260,6 +228,13 @@ export default {
             message: "Vui lòng không được để trống!",
             trigger: "blur"
           }
+        ],
+        email: [
+          {
+            required: true,
+            message: "Vui lòng không được để trống!",
+            trigger: "blur"
+          }
         ]
       }
     };
@@ -275,6 +250,12 @@ export default {
     }
   },
   methods: {
+    disabledEndDate(date) {
+      const beforeDate = new Date();
+      return this.itemSync.petDob == ""
+        ? date >= beforeDate.setDate(beforeDate.getDate())
+        : (date = this.itemSync.petDob);
+    },
     handleClose(done) {
       // handle previous close
       this.onCancelHandler();

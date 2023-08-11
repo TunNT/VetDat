@@ -6,7 +6,7 @@ const permission = ({ store, redirect }) => {
       currentRoute: { name }
     } = store.$router;
     if (allowedRoutersAccess(name, user.taro_role)) {
-      return redirect("/card-deck-list");
+      return redirect("/site");
     }
   } catch (error) {
     return;

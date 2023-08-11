@@ -8,8 +8,8 @@ const actions = {
       const response = await this.$axios.$get("/site/owners", {
         params: payload,
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access-token-site')}`,
-        },
+          Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
+        }
       });
       commit(MutationTypes.SET_OWNER_SITES, response);
     } catch (err) {
@@ -20,13 +20,21 @@ const actions = {
     }
   },
 
-  async [ActionTypes.OWNER_CREATE]({ commit }, payload) {
+  async [ActionTypes.OWNER_SITE_CREATE]({ commit }, payload) {
     commit(MutationTypes.SET_LOADING, true);
     let response;
     try {
-      response = await this.$axios.$post("/admin/sites", {
-        ...payload,
-      });
+      response = await this.$axios.$post(
+        "/site/owners",
+        {
+          ...payload
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
+          }
+        }
+      );
     } catch (err) {
       // handle error
     } finally {

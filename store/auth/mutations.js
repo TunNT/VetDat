@@ -4,8 +4,7 @@ const ROLE_ADMIN = 3;
 
 const mutations = {
   [MutationTypes.SET_TOKEN](state, { token }) {
-    localStorage.setItem('access-token', token)
-    state.isAdmin = 1
+    localStorage.setItem('access-token', token);
   },
 
   // [MutationTypes.SET_CURRENT_USER](state, { data }) {
@@ -19,13 +18,14 @@ const mutations = {
   //   state.loading = value;
   // },
 
-  // [MutationTypes.RESET](state) {
-  //   state.me = {};
-  //   state.permissions = [];
-  //   state.canEdit = false;
-  //   state.canDelete = false;
-  //   localStorage.removeItem('access-token');
-  // }
+  [MutationTypes.RESET](state) {
+    state.me = {};
+    state.permissions = [];
+    state.canEdit = false;
+    state.canDelete = false;
+    localStorage.removeItem('access-token');
+    state.isAdmin = 0;
+  }
 };
 
 export default mutations;

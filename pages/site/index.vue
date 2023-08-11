@@ -154,7 +154,6 @@
   color: #003049;
   background-color: #b3c0d1 !important;
   height: 40px !important;
-  width: 200px !important;
   font-size: 13px;
   font-weight: bold;
 }
@@ -264,7 +263,7 @@ export default {
           });
         })
         .finally(() => {
-          this.showAddGroupDialog = false;
+          this.showAddSiteDialog = false;
         });
     },
     onSubmitEditHandler(value) {
