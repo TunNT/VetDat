@@ -39,29 +39,33 @@ const actions = {
     }
   },
 
-  async [ActionTypes.PET_DETAIL]({ commit }, payload) {
+  async [ActionTypes.PET_SITE_DETAIL]({ commit }, _id) {
     commit(MutationTypes.SET_LOADING, true);
-    let site = {};
+    let pet = {};
     try {
-      site = {}; // await [call api get site depend on payload]
-      commit(MutationTypes.SET_USER, { site });
+      pet = await this.$axios.$get(`/site/pets/${_id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
+        }
+      });
+      commit(MutationTypes.SET_PET_SITE, pet);
     } catch (err) {
       // handle error
+      commit(MutationTypes.SET_PET_SITE, {});
     } finally {
       commit(MutationTypes.SET_LOADING, false);
     }
-    return site;
+    return pet;
   },
 
-  [ActionTypes.PET_UPDATE](_, payload) {
-    const response = this.$axios.$post("/api/users/role", payload);
+  async [ActionTypes.PET_SITE_UPDATE](_, payload) {
+    const response = await this.$axios.$put(`/site/pets/${payload.id}`, payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
+      }
+    });
     return response;
   },
-
-  async [ActionTypes.PET_DELETE](_, id) {
-    const response = this.$axios.$delete(`/admin/sites/${id}`);
-    return response;
-  }
 };
 
 export default actions;

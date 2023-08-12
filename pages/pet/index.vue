@@ -3,21 +3,17 @@
     <template>
       <div class="header-title-pet">
         <span>Tìm kiếm thú cưng</span>
-        <SearchInput
-          :placeholder="'Nhập để tìm kiếm'"
-          :clearable="true"
-          class="search-pet"
-          @onChangeHandler="onChangeHandler"
-        />
+        <SearchInput :placeholder="'Nhập để tìm kiếm'" :clearable="true" class="search-pet"
+          @onChangeHandler="onChangeHandler" />
       </div>
     </template>
     <template class="main">
-      <b-container class="main-container-empty" v-if="pagination.keyword==='' || isPetsEmpty">
+      <b-container class="main-container-empty" v-if="pagination.keyword == '' || isPetsEmpty">
         <h3 class="title">
           Thông tin của thú cưng
         </h3>
       </b-container>
-      <div v-else class="main-container">
+      <div v-else-if="pagination.keyword" class="main-container">
         <b-row class="m-auto form-create">
           <h3 class="title-content-pet">
             Thông tin của thú cưng có mã định danh: {{ pets.id }}
@@ -62,11 +58,11 @@
               </li>
               <li class="field-item">
                 <span class="field-label">Thời điểm sinh:</span>
-                <span class="field-value">{{ pets.petDob | FormatDay}}</span>
+                <span class="field-value">{{ pets.petDob | FormatDay }}</span>
               </li>
             </ul>
           </b-col>
-           <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
+          <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
             <ul class="field-list">
               <li class="field-item">
                 <span class="field-label-title">Chủ sở hữu</span>
@@ -75,14 +71,14 @@
                 <span class="field-label">Trạng thái::</span>
                 <span class="field-value">{{
                   pets.owner.status === 0
-                    ? "not activated "
-                    : pets.owner.status === 1
+                  ? "not activated "
+                  : pets.owner.status === 1
                     ? "Ok"
                     : pets.owner.status === 2
-                    ? "demo"
-                    : pets.owner.status === 3
-                    ? "suspend"
-                    : "expired"
+                      ? "demo"
+                      : pets.owner.status === 3
+                        ? "suspend"
+                        : "expired"
                 }}</span>
               </li>
               <!-- Repeat the above <li> structure for the remaining fields -->
@@ -113,17 +109,20 @@
                 <span class="field-label">Trạng thái::</span>
                 <span class="field-value">{{
                   pets.site.status === 0
-                    ? "not activated "
-                    : pets.site.status === 1
+                  ? "not activated "
+                  : pets.site.status === 1
                     ? "Ok"
                     : pets.site.status === 2
-                    ? "demo"
-                    : pets.site.status === 3
-                    ? "suspend"
-                    : "expired"
+                      ? "demo"
+                      : pets.site.status === 3
+                        ? "suspend"
+                        : "expired"
                 }}</span>
               </li>
-              <!-- Repeat the above <li> structure for the remaining fields -->
+              <li class="field-item">
+                <span class="field-label">Tên đăng nhập:</span>
+                <span class="field-value">{{ pets.site.login }}</span>
+              </li>
               <li class="field-item">
                 <span class="field-label">Tên:</span>
                 <span class="field-value">{{ pets.site.name }}</span>
@@ -148,38 +147,45 @@
           </b-col>
           <b-col cols="12">
             <div class="text-center mt-5">
-              <el-button class="btn-cancel" @click="onBackHome"
-                >Cancel</el-button
-              >
-              <el-button class="btn-create" @click="onPreviousHandler"
-                >Edit</el-button
-              >
+              <el-button class="btn-cancel" @click="onBackHome">Hủy</el-button>
+              <el-button class="btn-create" @click="handleEdit(pets)">Sửa</el-button>
+              <el-button class="btn-delete" @click="handleDelete(pets)">Xóa</el-button>
             </div>
           </b-col>
         </b-row>
       </div>
     </template>
 
-    <YesNoDialog
-      :dialogVisible="showDeleteDialog"
-      :onCancelHandler="onCancelDeleteHandler"
-      :onSubmitHandler="onSubmitDeleteHandler"
-      :msgNotify="'Do you want to delete this user?'"
-      :title="'Delete user'"
-    />
+    <YesNoDialog :dialogVisible="showDeleteDialog" :onCancelHandler="onCancelDeleteHandler"
+      :onSubmitHandler="onSubmitDeleteHandler" :msgNotify="'bạn có muốn xóa thú cưng này?'" :title="'Xác nhận'" />
+    <updatePet :dialogVisible="showEditDialog" :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler" :itemSelected="selectedPet" :options="statuses"
+      :optionsPetTriet="optionsPetTriet" :optionsPetType="optionsPetType" :optionsPetSex="optionsPetSex"
+      :listOwner=owners.data :listSite="sites.data" />
   </div>
 </template>
 <style>
+.btn-delete {
+  background-color: #f78989;
+}
+
+.btn-create {
+  background-color: #b3c0d1;
+}
+
 .field-label-title {
   font-size: 24px;
 }
+
 .title-content-pet {
   width: 100%;
 }
+
 .main-container-empty {
   margin-top: 50px;
   text-align: center;
 }
+
 .main-container {
   margin-top: 50px;
   text-align: center;
@@ -187,6 +193,7 @@
   box-shadow: 0px 0px 5px 1px #f1eaea;
   padding: 50px;
 }
+
 .field-list {
   list-style: none;
   padding: 0;
@@ -207,28 +214,35 @@
 .field-value {
   font-style: italic;
 }
+
 .search-pet {
   margin-top: 20px;
 }
+
 .search-pet .el-input__inner {
   height: 50px;
 }
+
 .el-header {
   background-color: #b3c0d1;
   color: #333;
   line-height: 60px;
 }
+
 .btn-info {
   border: none;
   font-style: italic;
 }
+
 .el-aside {
   color: #333;
 }
+
 .header-title-pet {
   text-align: center;
   margin-top: 25px;
 }
+
 .header-title-pet span {
   width: 58px;
   font-family: "Montserrat";
@@ -245,15 +259,16 @@
 // lib
 import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
-
+import updatePet from "@/components/pet/edit";
 // component
 import SearchInput from "@components/SearchInput";
 export default {
   layout: "private",
-  // middleware: "authenticated",
-  // middleware: "permission",
+  middleware: "authenticated",
+  middleware: "permission",
   components: {
-    SearchInput
+    SearchInput,
+    updatePet
   },
   data() {
     return {
@@ -264,13 +279,83 @@ export default {
       pagination: {
         keyword: ""
       },
-      selectedUser: {}
+      selectedPet: {},
+      statuses: [
+        {
+          label: "chưa kích hoạt",
+          value: 0
+        },
+        {
+          label: "kích hoạt",
+          value: 1
+        },
+        {
+          label: "thử nghiệm",
+          value: 2
+        },
+        {
+          label: "hoãn lại",
+          value: 3
+        },
+        {
+          label: "hết hạn",
+          value: 4
+        }
+      ],
+      optionsPetTriet: [
+        {
+          label: "chưa xác định",
+          value: 0
+        },
+        {
+          label: "đã triệt sản",
+          value: 1
+        },
+        {
+          label: "chưa triệt sản",
+          value: 2
+        }
+      ],
+      optionsPetType: [
+        {
+          label: "chưa xác định",
+          value: 0
+        },
+        {
+          label: "Chó",
+          value: 1
+        },
+        {
+          label: "Mèo",
+          value: 2
+        },
+        {
+          label: "Thỏ",
+          value: 3
+        }
+      ],
+      optionsPetSex: [
+        {
+          label: "chưa xác định",
+          value: 0
+        },
+        {
+          label: "Đực",
+          value: 1
+        },
+        {
+          label: "Cái",
+          value: 2
+        },
+      ]
     };
   },
   computed: {
     ...mapGetters({
       loading: "pet/loading",
-      pets: "pet/pets"
+      pets: "pet/pets",
+      owners: "owner/owners",
+      sites: "site/sites"
     }),
     isPetsEmpty() {
       return this.pets.length === 0;
@@ -279,8 +364,10 @@ export default {
   methods: {
     ...mapActions({
       getPetList: "pet/PET_LIST",
-      updatePetRole: "pet/PET_UPDATE",
-      deletePet: "pet/PET_DELETE"
+      updatePet: "pet/PET_UPDATE",
+      deletePet: "pet/PET_DELETE",
+      getOwnerList: "owner/OWNER_LIST",
+      getSiteList: "site/SITE_LIST",
     }),
     onChangeHandler(val) {
       this.pagination.keyword = val;
@@ -296,34 +383,30 @@ export default {
       };
     },
     onSubmitEditHandler(value) {
-      if (!value) return;
-      this.updateUserRole({
-        user_id: this.selectedUser.id,
-        role_id: value
-      })
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
+      this.updatePet(value)
+        .then((result) => {
+          if (result.message === "common_success") {
+            this.getPetList(_.pickBy(this.pagination, (value) => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success"
+              type: "success",
             });
           } else {
             this.$notify({
               group: "all",
-              title: "Cập nhật không thành công",
+              title: "Cập nhật thất bại",
               type: "error",
-              text: error
+              text: error,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$notify({
             group: "all",
-            title: "Cập nhật không thành công",
+            title: "Cập nhật thất bại",
             type: "error",
-            text: error
+            text: error,
           });
         })
         .finally(() => {
@@ -340,15 +423,16 @@ export default {
       this.$router.push("/pet");
     },
     onSubmitDeleteHandler() {
-      this.deleteUser(this.selectedUser.id)
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
+      this.deletePet(this.selectedPet.id)
+        .then((result) => {
+          if (result.message === "common_success") {
+            this.getPetList(_.pickBy(this.pagination, value => value));
             this.$notify({
               group: "all",
               title: "Xóa thành công",
               type: "success"
             });
+            this.pagination.keyword = '';
           } else {
             this.$notify({
               group: "all",
@@ -373,12 +457,12 @@ export default {
         });
     },
 
-    handleEdit(_, row) {
-      this.selectedUser = row;
+    handleEdit(row) {
+      this.selectedPet = row;
       this.showEditDialog = true;
     },
-    handleDelete(_, row) {
-      this.selectedUser = row;
+    handleDelete(row) {
+      this.selectedPet = row;
       this.showDeleteDialog = true;
     },
     handleSizeChange(val) {
@@ -392,6 +476,8 @@ export default {
     pagination: {
       handler(val) {
         this.getPetList(_.pickBy(val, value => value));
+        this.getOwnerList();
+        this.getSiteList();
       },
       deep: true
     }
@@ -399,6 +485,8 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.getPetList(_.pickBy(vm.pagination, value => value));
+      vm.getOwnerList();
+      vm.getSiteList();
     });
   }
 };

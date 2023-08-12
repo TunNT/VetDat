@@ -5,7 +5,7 @@ const permission = ({ store, redirect }) => {
     const {
       currentRoute: { name }
     } = store.$router;
-    if (allowedRoutersAccess(name, user.taro_role)) {
+    if (allowedRoutersAccess(name, user.isRoot)) {
       return redirect("/site");
     }
   } catch (error) {

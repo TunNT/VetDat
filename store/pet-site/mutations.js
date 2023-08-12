@@ -7,6 +7,7 @@ const mutations = {
 
   [MutationTypes.SET_PET_SITE](state, { data }) {
     state.petSite = data
+    state.ownerPet = data.owner;
   },
 
   [MutationTypes.SET_LOADING](state, value) {

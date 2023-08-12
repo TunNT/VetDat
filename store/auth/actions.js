@@ -25,7 +25,7 @@ const actions = {
     async [ActionTypes.GET_ME]({ commit }, payload) {
         commit(MutationTypes.SET_LOADING, true);
         try {
-            const response = await this.$axios.$get('/api/users/me')
+            const response = await this.$axios.$get('/admin/me')
             commit(MutationTypes.SET_CURRENT_USER, response)
         } catch (err) {
             // reset auth store

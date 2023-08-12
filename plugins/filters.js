@@ -25,3 +25,8 @@ Vue.filter('FormatDay', val => {
       return moment(String(val)).format('MM/DD/YYYY')
   }
 });
+Vue.filter('FormatDate', val => {
+  if (val) {
+      return moment(String(val)).format('MM/DD/YYYY ss:mm:HH')
+  }
+});

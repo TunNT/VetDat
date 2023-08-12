@@ -32,17 +32,23 @@
             <i class="el-icon-menu"></i>
             <span slot="title"> Quản lí </span>
           </template>
-          <nuxt-link to="/site">
+          <nuxt-link v-if="isAdmin" to="/site">
             <el-menu-item index="1-1"> Site </el-menu-item>
           </nuxt-link>
-          <nuxt-link to="/pet">
+          <nuxt-link v-if="isAdmin" to="/pet">
             <el-menu-item index="1-2"> Thú cưng </el-menu-item>
           </nuxt-link>
-          <nuxt-link to="/owner" name="card">
+          <nuxt-link v-if="isAdmin" to="/owner" name="card">
             <el-menu-item index="1-3"> Chủ sở hữu </el-menu-item>
           </nuxt-link>
+          <nuxt-link v-if="isSite" to="/pet-site">
+            <el-menu-item index="1-4"> Thú cưng(S) </el-menu-item>
+          </nuxt-link>
+          <nuxt-link v-if="isSite" to="/owner-site" name="card">
+            <el-menu-item index="1-5"> Chủ sở hữu(S) </el-menu-item>
+          </nuxt-link>
         </el-submenu>
-        <el-submenu class="private-layout__menu-bar__submenu" index="2">
+        <!-- <el-submenu class="private-layout__menu-bar__submenu" index="2">
           <template slot="title">
             <i class="el-icon-menu"></i>
             <span slot="title"> Quản lí (Site)</span>
@@ -53,7 +59,7 @@
           <nuxt-link to="/owner-site" name="card">
             <el-menu-item index="2-2"> Chủ sở hữu </el-menu-item>
           </nuxt-link>
-        </el-submenu>
+        </el-submenu> -->
       
       </el-menu>
     </el-aside>
@@ -73,7 +79,9 @@
               <el-dropdown-item command="info"
                 ></el-dropdown-item
               >
-              <el-dropdown-item  command="logout">Thoát(A)</el-dropdown-item>
+              <el-dropdown-item v-if="isAdmin" command="logout">Thoát(A)</el-dropdown-item>
+              <el-dropdown-item v-else-if="isSite" command="logoutSite">Thoát(S)</el-dropdown-item>
+              <el-dropdown-item v-else command="logoutEmpty">Thoát</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -143,6 +151,9 @@ export default {
           return;
         case "logoutSite":
           this.$store.dispatch("auth-site/AUTH_SITE_LOGOUT");
+          this.$router.push("/login-site");
+          return;
+        case "logoutEmpty":
           this.$router.push("/");
           return;
         default:

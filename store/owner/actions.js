@@ -21,7 +21,7 @@ const actions = {
     commit(MutationTypes.SET_LOADING, true);
     let response;
     try {
-        response = await this.$axios.$post("/admin/sites", {
+        response = await this.$axios.$post("/admin/owners", {
             ...payload,
         });
     } catch (err) {
@@ -46,8 +46,9 @@ const actions = {
     return site;
   },
 
-  [ActionTypes.OWNER_UPDATE](_, payload) {
-    const response = this.$axios.$post("/api/users/role", payload);
+  async [ActionTypes.OWNER_UPDATE](_, payload) {
+    const { status, name, address, phone, notes } = payload;
+    const response = await this.$axios.$put(`/admin/owners/${payload.id}`,{ status, name, address, phone, notes });
     return response;
   },
 

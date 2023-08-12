@@ -46,8 +46,8 @@ const actions = {
     return site;
   },
 
-  [ActionTypes.SITE_UPDATE](_, payload) {
-    const response = this.$axios.$post("/api/users/role", payload);
+  async [ActionTypes.SITE_UPDATE](_, payload) {
+    const response = await this.$axios.$put(`/admin/sites/${payload.id}`, payload);
     return response;
   },
 

@@ -46,13 +46,13 @@ const actions = {
     return site;
   },
 
-  [ActionTypes.PET_UPDATE](_, payload) {
-    const response = this.$axios.$post("/api/users/role", payload);
+  async [ActionTypes.PET_UPDATE](_, payload) {
+    const response = await this.$axios.$put(`/admin/pets/${payload.id}`, payload);
     return response;
   },
 
   async [ActionTypes.PET_DELETE](_, id) {
-    const response = this.$axios.$delete(`/admin/sites/${id}`);
+    const response = this.$axios.$delete(`/admin/pets/${id}`);
     return response;
   }
 };

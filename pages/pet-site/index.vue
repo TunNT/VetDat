@@ -104,25 +104,17 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >Sửa</el-button
-          >
           <el-button
             size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >Xóa</el-button
+            @click="handleInfor(scope.$index, scope.row)"
+            >Chi tiết</el-button
+          >
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            >Sửa</el-button
           >
         </template>
       </el-table-column>
     </el-table>
-    <YesNoDialog
-      :dialogVisible="showDeleteDialog"
-      :onCancelHandler="onCancelDeleteHandler"
-      :onSubmitHandler="onSubmitDeleteHandler"
-      :msgNotify="'Do you want to delete this user?'"
-      :title="'Delete user'"
-    />
     <addPet
       :dialogVisible="showAddPetDialog"
       :onCancelHandler="onCancelAddHandler"
@@ -134,6 +126,10 @@
       :optionsPetSex="optionsPetSex"
       :listOwner=ownerSites.data
     />
+    <updatePet :dialogVisible="showEditDialog" :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler" :itemSelected="selectedPet" :options="statuses"
+      :optionsPetTriet="optionsPetTriet" :optionsPetType="optionsPetType" :optionsPetSex="optionsPetSex"
+      :listOwner=ownerSites.data />
   </div>
 </template>
 <style>
@@ -213,29 +209,31 @@
 import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
 import addPet from "@/components/pet/add";
+import updatePet from "@/components/pet/edit-site";
 
 // component
 import SearchInput from "@components/SearchInput";
 export default {
   layout: "private",
-  // middleware: "authenticated",
-  // middleware: "permission",
+  middleware: "authenticatedSite",
+  middleware: "permissionSite",
+  middleware: "isValidTokenSite",
   components: {
     SearchInput,
-    addPet
+    addPet,
+    updatePet
   },
   data() {
     return {
       search: "",
       currentPage: 1,
-      showDeleteDialog: false,
       showEditDialog: false,
       showAddPetDialog: false,
       addPet: {},
       pagination: {
         keyword: ""
       },
-      selectedUser: {},
+      selectedPet: {},
       statuses: [
         {
           label: "chưa kích hoạt",
@@ -320,8 +318,7 @@ export default {
     ...mapActions({
       getPetSiteList: "pet-site/PET_SITE_LIST",
       createPet: "pet-site/PET_SITE_CREATE",
-      updatePetRole: "pet-site/PET_UPDATE",
-      deletePet: "pet-site/PET_DELETE",
+      updatePet: "pet-site/PET_SITE_UPDATE",
       getOwnerSiteList: "owner-site/OWNER_SITE_LIST",
     }),
     onChangeHandler(val) {
@@ -340,7 +337,9 @@ export default {
         ...sort
       };
     },
-
+    handleInfor(_,row) {
+      this.$router.push(`/pet-site/${row.id}`)
+    },
     onSubmitAddHandler(value) {
       this.createPet(value)
         .then((result) => {
@@ -369,34 +368,30 @@ export default {
         });
     },
     onSubmitEditHandler(value) {
-      if (!value) return;
-      this.updateUserRole({
-        user_id: this.selectedUser.id,
-        role_id: value
-      })
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
+      this.updatePet(value)
+        .then((result) => {
+          if (result.message === "common_success") {
+            this.getPetSiteList(_.pickBy(this.pagination, (value) => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success"
+              type: "success",
             });
           } else {
             this.$notify({
               group: "all",
-              title: "Cập nhật không thành công",
+              title: "Cập nhật thất bại",
               type: "error",
-              text: error
+              text: error,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$notify({
             group: "all",
-            title: "Cập nhật không thành công",
+            title: "Cập nhật thất bại",
             type: "error",
-            text: error
+            text: error,
           });
         })
         .finally(() => {
@@ -418,47 +413,10 @@ export default {
     redirectAdd() {
       (this.addPet = {}), (this.showAddPetDialog = true);
     },
-    onSubmitDeleteHandler() {
-      this.deleteUser(this.selectedUser.id)
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
-            this.$notify({
-              group: "all",
-              title: "Xóa thành công",
-              type: "success"
-            });
-          } else {
-            this.$notify({
-              group: "all",
-              title: "Xóa không thành công",
-              type: "error",
-              text: error
-            });
-          }
-        })
-        .catch(error => {
-          if (error !== 404 && error !== 500) {
-            this.$notify({
-              group: "all",
-              title: "Xóa không thành công",
-              type: "error",
-              text: error
-            });
-          }
-        })
-        .finally(() => {
-          this.showDeleteDialog = false;
-        });
-    },
 
     handleEdit(_, row) {
-      this.selectedUser = row;
+      this.selectedPet = row;
       this.showEditDialog = true;
-    },
-    handleDelete(_, row) {
-      this.selectedUser = row;
-      this.showDeleteDialog = true;
     },
     handleSizeChange(val) {
       this.pagination.number = val;

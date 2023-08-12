@@ -113,7 +113,14 @@
       :msgNotify="'Bạn có muốn xóa người sở hữu này?'"
       :title="'Xóa chủ sở hữu'"
     />
-
+    <UpdateOwner
+      :dialogVisible="showEditDialog"
+      :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler"
+      :itemSelected="selectedOwner"
+      :options="statuses"
+      :optionSites="sites.data"
+    />
   </div>
 </template>
 <style>
@@ -136,6 +143,7 @@
 // lib
 import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
+import UpdateOwner from "@/components/owner/edit";
 
 // component
 import SearchInput from "@components/SearchInput";
@@ -144,7 +152,8 @@ export default {
   // middleware: "authenticated",
   // middleware: "permission",
   components: {
-    SearchInput
+    SearchInput,
+    UpdateOwner
   },
   data() {
     return {
@@ -155,19 +164,43 @@ export default {
       pagination: {
         keyword: ""
       },
-      selectedUser: {},
+      selectedOwner: {},
+      statuses: [
+        {
+          label: "chưa kích hoạt",
+          value: 0
+        },
+        {
+          label: "kích hoạt",
+          value: 1
+        },
+        {
+          label: "thử nghiệm",
+          value: 2
+        },
+        {
+          label: "hoãn lại",
+          value: 3
+        },
+        {
+          label: "hết hạn",
+          value: 4
+        }
+      ],
     };
   },
   computed: {
     ...mapGetters({
       loading: "owner/loading",
-      owners: "owner/owners"
+      owners: "owner/owners",
+      sites: "site/sites"
     })
   },
   methods: {
     ...mapActions({
+      getSiteList: "site/SITE_LIST",
       getOwnerList: "owner/OWNER_LIST",
-      updateOwnerRole: "owner/OWNER_UPDATE",
+      updateOwner: "owner/OWNER_UPDATE",
       deleteOwner: "owner/OWNER_DELETE"
     }),
     onChangeHandler(val) {
@@ -183,47 +216,46 @@ export default {
         ...sort
       };
     },
-    onSubmitEditHandler(value) {
-      if (!value) return;
-      this.updateUserRole({
-        user_id: this.selectedUser.id,
-        role_id: value
-      })
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
-            this.$notify({
-              group: "all",
-              title: "Cập nhật thành công",
-              type: "success"
-            });
-          } else {
-            this.$notify({
-              group: "all",
-              title: "Cập nhật không thành công",
-              type: "error",
-              text: error
-            });
-          }
-        })
-        .catch(error => {
-          this.$notify({
-            group: "all",
-            title: "Cập nhật không thành công",
-            type: "error",
-            text: error
-          });
-        })
-        .finally(() => {
-          this.showEditDialog = false;
-        });
-    },
+    
     onCancelEditHandler() {
       this.showEditDialog = false;
     },
     onCancelDeleteHandler() {
       this.showDeleteDialog = false;
     },
+
+    onSubmitEditHandler(value) {
+      this.updateOwner(value)
+        .then((result) => {
+          if (result.message ==="common_success") {
+            this.getOwnerList(_.pickBy(this.pagination, (value) => value));
+            this.$notify({
+              group: "all",
+              title: "Cập nhật thành công",
+              type: "success",
+            });
+          } else {
+            this.$notify({
+              group: "all",
+              title: "Cập nhật thất bại",
+              type: "error",
+              text: error,
+            });
+          }
+        })
+        .catch((error) => {
+          this.$notify({
+            group: "all",
+            title: "Cập nhật thất bại",
+            type: "error",
+            text: error,
+          });
+        })
+        .finally(() => {
+          this.showEditDialog = false;
+        });
+    },
+
     onSubmitDeleteHandler() {
       this.deleteUser(this.selectedUser.id)
         .then(({ message, error }) => {
@@ -259,11 +291,11 @@ export default {
     },
 
     handleEdit(_, row) {
-      this.selectedUser = row;
+      this.selectedOwner = row;
       this.showEditDialog = true;
     },
     handleDelete(_, row) {
-      this.selectedUser = row;
+      this.selectedOwner = row;
       this.showDeleteDialog = true;
     },
     handleSizeChange(val) {
@@ -277,6 +309,7 @@ export default {
     pagination: {
       handler(val) {
         this.getOwnerList(_.pickBy(val, value => value));
+        this.getSiteList();
       },
       deep: true
     }
@@ -284,6 +317,7 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.getOwnerList(_.pickBy(vm.pagination, value => value));
+      vm.getSiteList();
     });
   }
 };

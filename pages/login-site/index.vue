@@ -42,12 +42,12 @@
 import { mapActions, mapGetters } from "vuex";
 import _ from "lodash";
 export default {
-    // middleware({ store, redirect }) {
-    //     const user = store.getters["auth/me"];
-    //     if (!_.isEmpty(user)) {
-    //         return redirect("/card-deck-list");
-    //     }
-    // },
+    middleware({ store, redirect }) {
+        const site = store.getters["auth-site/siteMe"];
+        if (!_.isEmpty(site)) {
+            return redirect("/pet-site");
+        }
+    },
     data() {
         return {
             formLogin: {

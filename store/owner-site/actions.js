@@ -43,22 +43,31 @@ const actions = {
     }
   },
 
-  async [ActionTypes.OWNER_DETAIL]({ commit }, payload) {
+  async [ActionTypes.OWNER_SITE_DETAIL]({ commit }, _id) {
     commit(MutationTypes.SET_LOADING, true);
-    let site = {};
+    let owner = {};
     try {
-      site = {}; // await [call api get site depend on payload]
-      commit(MutationTypes.SET_USER, { site });
+      owner = await this.$axios.$get(`/site/owners/${_id}`,{
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
+        }
+      });
+      commit(MutationTypes.SET_OWNER_SITE,  owner );
     } catch (err) {
       // handle error
+      commit(MutationTypes.SET_OWNER_SITE, {});
     } finally {
       commit(MutationTypes.SET_LOADING, false);
     }
-    return site;
+    return owner;
   },
 
-  [ActionTypes.OWNER_UPDATE](_, payload) {
-    const response = this.$axios.$post("/api/users/role", payload);
+  [ActionTypes.OWNER_SITE_UPDATE](_, payload) {
+    const response = this.$axios.$put(`/site/owners/${payload.id}`, payload, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
+      }
+    });
     return response;
   },
 

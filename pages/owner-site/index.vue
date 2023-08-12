@@ -71,14 +71,13 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
-            >Sửa</el-button
-          >
           <el-button
             size="mini"
-            type="danger"
-            @click="handleDelete(scope.$index, scope.row)"
-            >Xóa</el-button
+            @click="handleInfor(scope.$index, scope.row)"
+            >Chi tiết</el-button
+          >
+          <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
+            >Sửa</el-button
           >
         </template>
       </el-table-column>
@@ -110,6 +109,13 @@
       :itemSelected="addOwner"
       :options="statuses"
     />
+    <UpdateOwner
+      :dialogVisible="showEditDialog"
+      :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler"
+      :itemSelected="selectedOwner"
+      :options="statuses"
+    />
   </div>
 </template>
 <style>
@@ -132,16 +138,19 @@
 import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
 import addOwner from "@/components/owner/add";
+import UpdateOwner from "@/components/owner/edit";
 
 // component
 import SearchInput from "@components/SearchInput";
 export default {
   layout: "private",
-  // middleware: "authenticated",
-  // middleware: "permission",
+  middleware: "authenticatedSite",
+  middleware: "permissionSite",
+  middleware: "isValidTokenSite",
   components: {
     SearchInput,
-    addOwner
+    addOwner,
+    UpdateOwner
   },
   data() {
     return {
@@ -154,7 +163,7 @@ export default {
       pagination: {
         keyword: ""
       },
-      selectedUser: {},
+      selectedOwner: {},
       statuses: [
         {
           label: "chưa kích hoạt",
@@ -182,15 +191,15 @@ export default {
   computed: {
     ...mapGetters({
       loading: "owner-site/loading",
-      ownerSites: "owner-site/ownerSites"
+      ownerSites: "owner-site/ownerSites",
     })
   },
   methods: {
     ...mapActions({
       getOwnerSiteList: "owner-site/OWNER_SITE_LIST",
       createOwner: "owner-site/OWNER_SITE_CREATE",
-      updateOwnerRole: "owner-site/OWNER_SITE_UPDATE",
-      deleteOwner: "owner-site/OWNER_SITE_DELETE"
+      updateOwner: "owner-site/OWNER_SITE_UPDATE",
+      deleteOwner: "owner-site/OWNER_SITE_DELETE",
     }),
     onChangeHandler(val) {
       this.pagination.keyword = val;
@@ -233,39 +242,38 @@ export default {
         });
     },
     onSubmitEditHandler(value) {
-      if (!value) return;
-      this.updateUserRole({
-        user_id: this.selectedUser.id,
-        role_id: value
-      })
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
+      this.updateOwner(value)
+        .then((result) => {
+          if (result.message ==="common_success") {
+            this.getOwnerSiteList(_.pickBy(this.pagination, (value) => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success"
+              type: "success",
             });
           } else {
             this.$notify({
               group: "all",
-              title: "Cập nhật không thành công",
+              title: "Cập nhật thất bại",
               type: "error",
-              text: error
+              text: error,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$notify({
             group: "all",
-            title: "Cập nhật không thành công",
+            title: "Cập nhật thất bại",
             type: "error",
-            text: error
+            text: error,
           });
         })
         .finally(() => {
           this.showEditDialog = false;
         });
+    },
+    handleInfor(_,row) {
+      this.$router.push(`/owner-site/${row.id}`)
     },
     onCancelEditHandler() {
       this.showEditDialog = false;
@@ -276,50 +284,9 @@ export default {
     redirectAdd() {
       (this.addOwner = {}), (this.showAddOwnerDialog = true);
     },
-    onCancelDeleteHandler() {
-      this.showDeleteDialog = false;
-    },
-    onSubmitDeleteHandler() {
-      this.deleteUser(this.selectedUser.id)
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
-            this.$notify({
-              group: "all",
-              title: "Xóa thành công",
-              type: "success"
-            });
-          } else {
-            this.$notify({
-              group: "all",
-              title: "Xóa không thành công",
-              type: "error",
-              text: error
-            });
-          }
-        })
-        .catch(error => {
-          if (error !== 404 && error !== 500) {
-            this.$notify({
-              group: "all",
-              title: "Xóa không thành công",
-              type: "error",
-              text: error
-            });
-          }
-        })
-        .finally(() => {
-          this.showDeleteDialog = false;
-        });
-    },
-
     handleEdit(_, row) {
-      this.selectedUser = row;
+      this.selectedOwner = row;
       this.showEditDialog = true;
-    },
-    handleDelete(_, row) {
-      this.selectedUser = row;
-      this.showDeleteDialog = true;
     },
     handleSizeChange(val) {
       this.pagination.number = val;

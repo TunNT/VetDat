@@ -120,6 +120,13 @@
       :itemSelected="addSite"
       :options="statuses"
     />
+    <UpdateSite
+      :dialogVisible="showEditDialog"
+      :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler"
+      :itemSelected="selectedSite"
+      :options="statuses"
+    />
   </div>
 </template>
 <style>
@@ -167,15 +174,17 @@
 import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
 import addSite from "@/components/site/add";
+import UpdateSite from "@/components/site/edit";
 // component
 import SearchInput from "@components/SearchInput";
 export default {
   layout: "private",
-  // middleware: "authenticated",
-  // middleware: "permission",
+  middleware: "authenticated",
+  middleware: "permission",
   components: {
     SearchInput,
-    addSite
+    addSite,
+    UpdateSite
   },
   data() {
     return {
@@ -222,7 +231,7 @@ export default {
   methods: {
     ...mapActions({
       getSiteList: "site/SITE_LIST",
-      updateSiteRole: "site/SITE_UPDATE",
+      updateSite: "site/SITE_UPDATE",
       deleteSite: "site/SITE_DELETE",
       createSite: "site/SITE_CREATE"
     }),
@@ -263,38 +272,34 @@ export default {
           });
         })
         .finally(() => {
-          this.showAddSiteDialog = false;
+          this.showAddSiteDialog = true;
         });
     },
     onSubmitEditHandler(value) {
-      if (!value) return;
-      this.updateUserRole({
-        user_id: this.selectedUser.id,
-        role_id: value
-      })
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
+      this.updateSite(value)
+        .then((result) => {
+          if (result.message === "common_success") {
+            this.getSiteList(_.pickBy(this.pagination, (value) => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success"
+              type: "success",
             });
           } else {
             this.$notify({
               group: "all",
-              title: "Cập nhật không thành công",
+              title: "Cập nhật thất bại",
               type: "error",
-              text: error
+              text: error,
             });
           }
         })
-        .catch(error => {
+        .catch((error) => {
           this.$notify({
             group: "all",
-            title: "Cập nhật không thành công",
+            title: "Cập nhật thất bại",
             type: "error",
-            text: error
+            text: error,
           });
         })
         .finally(() => {
@@ -308,7 +313,6 @@ export default {
       this.showDeleteDialog = false;
     },
     onSubmitDeleteHandler() {
-      console.log('this.selectedSite',this.selectedSite);
       this.deleteSite(this.selectedSite.id)
         .then(({ message, error }) => {
           if (message === "common_success") {
@@ -343,7 +347,7 @@ export default {
     },
 
     handleEdit(_, row) {
-      this.selectedUser = row;
+      this.selectedSite = row;
       this.showEditDialog = true;
     },
     handleDelete(_, row) {

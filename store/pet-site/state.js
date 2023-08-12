@@ -1,7 +1,8 @@
 const state = () => ({
   petSites: {},
   petSite: {},
-  loading: false
+  loading: false,
+  ownerPet: {},
 });
 
 export default state;

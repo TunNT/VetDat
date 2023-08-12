@@ -1,22 +1,22 @@
 import MutationTypes from "./mutation-types";
-const ROLE_READER = 2;
-const ROLE_ADMIN = 3;
+const ROLE_ADMIN = true;
 
 const mutations = {
   [MutationTypes.SET_TOKEN](state, { token }) {
     localStorage.setItem('access-token', token);
   },
 
-  // [MutationTypes.SET_CURRENT_USER](state, { data }) {
-  //   const { taro_role = 0 } = data;
-  //   state.me = data;
-  //   state.canEdit = taro_role === ROLE_READER || taro_role === ROLE_ADMIN;
-  //   state.canDelete = taro_role === ROLE_ADMIN;
-  // },
+  [MutationTypes.SET_CURRENT_USER](state, { data }) {
+    const {isRoot} = data;
+    state.me = data;
+    state.canEdit = true
+    state.canDelete = true;
+    state.isAdmin = isRoot === ROLE_ADMIN ? 1 : 0;
+  },
 
-  // [MutationTypes.SET_LOADING](state, value) {
-  //   state.loading = value;
-  // },
+  [MutationTypes.SET_LOADING](state, value) {
+    state.loading = value;
+  },
 
   [MutationTypes.RESET](state) {
     state.me = {};
