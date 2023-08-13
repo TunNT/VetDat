@@ -20,7 +20,7 @@
       <el-menu
         :collapse="isCollapse"
         :default-openeds="['1', '2', '3']"
-        :default-active="activedMenu"
+        :default-active="isAdmin ? activedMenu : activedMenuSite"
         background-color="#001529"
         text-color="#fff"
         active-text-color="#fff"
@@ -42,10 +42,10 @@
             <el-menu-item index="1-3"> Chủ sở hữu </el-menu-item>
           </nuxt-link>
           <nuxt-link v-if="isSite" to="/pet-site">
-            <el-menu-item index="1-4"> Thú cưng(S) </el-menu-item>
+            <el-menu-item index="1-4"> Thú cưng </el-menu-item>
           </nuxt-link>
           <nuxt-link v-if="isSite" to="/owner-site" name="card">
-            <el-menu-item index="1-5"> Chủ sở hữu(S) </el-menu-item>
+            <el-menu-item index="1-5"> Chủ sở hữu </el-menu-item>
           </nuxt-link>
         </el-submenu>
         <!-- <el-submenu class="private-layout__menu-bar__submenu" index="2">
@@ -79,8 +79,8 @@
               <el-dropdown-item command="info"
                 ></el-dropdown-item
               >
-              <el-dropdown-item v-if="isAdmin" command="logout">Thoát(A)</el-dropdown-item>
-              <el-dropdown-item v-else-if="isSite" command="logoutSite">Thoát(S)</el-dropdown-item>
+              <el-dropdown-item v-if="isAdmin" command="logout">Thoát</el-dropdown-item>
+              <el-dropdown-item v-else-if="isSite" command="logoutSite">Thoát</el-dropdown-item>
               <el-dropdown-item v-else command="logoutEmpty">Thoát</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
@@ -117,6 +117,7 @@ export default {
       // USER_ROLE: 1,
       isCollapse: false,
       activedMenu: "1-1",
+      activedMenuSite: "1-3",
       windowWidth: 0,
     };
   },

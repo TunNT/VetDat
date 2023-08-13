@@ -6,7 +6,7 @@ const actions = {
         commit(MutationTypes.SET_LOADING, true);
         let response = {}
         try {
-            response = await this.$axios.$post('/site/login', {
+            response = await this.$axios.$post('/shop/login', {
                 login: codeID,
                 password
             })
@@ -25,7 +25,7 @@ const actions = {
     async [ActionTypes.GET_SITE_ME]({ commit }, payload) {
         commit(MutationTypes.SET_LOADING, true);
         try {
-            const response = await this.$axios.$get('/site/me', {
+            const response = await this.$axios.$get('/shop/me', {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
                   }

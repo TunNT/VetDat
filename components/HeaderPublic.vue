@@ -1,5 +1,5 @@
 <template>
-  <nuxt-link to="/search">
+  <nuxt-link to="/">
     <b-col
       cols="12"
       class="d-flex col-12 align-items-center justify-content-center mb-3"

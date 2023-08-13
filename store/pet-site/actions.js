@@ -5,7 +5,7 @@ const actions = {
   async [ActionTypes.PET_SITE_LIST]({ commit }, payload) {
     commit(MutationTypes.SET_LOADING, true);
     try {
-      const response = await this.$axios.$get("/site/pets", {
+      const response = await this.$axios.$get("/shop/pets", {
         params: payload,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
@@ -24,7 +24,7 @@ const actions = {
     commit(MutationTypes.SET_LOADING, true);
     let response;
     try {
-      response = await this.$axios.$post("/site/pets", {
+      response = await this.$axios.$post("/shop/pets", {
         ...payload
       }, {
         headers: {
@@ -43,7 +43,7 @@ const actions = {
     commit(MutationTypes.SET_LOADING, true);
     let pet = {};
     try {
-      pet = await this.$axios.$get(`/site/pets/${_id}`, {
+      pet = await this.$axios.$get(`/shop/pets/${_id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
         }
@@ -59,7 +59,7 @@ const actions = {
   },
 
   async [ActionTypes.PET_SITE_UPDATE](_, payload) {
-    const response = await this.$axios.$put(`/site/pets/${payload.id}`, payload, {
+    const response = await this.$axios.$put(`/shop/pets/${payload.id}`, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
       }

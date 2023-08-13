@@ -95,13 +95,6 @@
         >
         </el-pagination>
       </div> -->
-    <YesNoDialog
-      :dialogVisible="showDeleteDialog"
-      :onCancelHandler="onCancelDeleteHandler"
-      :onSubmitHandler="onSubmitDeleteHandler"
-      :msgNotify="'Bạn có muốn xóa người sở hữu này?'"
-      :title="'Xóa chủ sở hữu'"
-    />
     <addOwner
       :dialogVisible="showAddOwnerDialog"
       :onCancelHandler="onCancelAddHandler"
@@ -115,6 +108,12 @@
       :onSubmitHandler="onSubmitEditHandler"
       :itemSelected="selectedOwner"
       :options="statuses"
+    />
+    <Detail
+      :dialogVisible="showDetailDialog"
+      :onCancelHandler="onCancelDetailHandler"
+      :onSubmitHandler="onSubmitDetailHandler"
+      :itemSelected="selectedOwner"
     />
   </div>
 </template>
@@ -131,6 +130,15 @@
 .el-aside {
   color: #333;
 }
+.add-btn {
+  background-color: #b3c0d1 !important;
+  font-size: 20px;
+  color: #333;
+}
+.add-btn span:hover {
+  color: #333;
+}
+
 </style>
 
 <script>
@@ -139,6 +147,7 @@ import { mapGetters, mapActions } from "vuex";
 import _ from "lodash";
 import addOwner from "@/components/owner/add";
 import UpdateOwner from "@/components/owner/edit";
+import Detail from "@/components/owner/detail";
 
 // component
 import SearchInput from "@components/SearchInput";
@@ -146,11 +155,11 @@ export default {
   layout: "private",
   middleware: "authenticatedSite",
   middleware: "permissionSite",
-  middleware: "isValidTokenSite",
   components: {
     SearchInput,
     addOwner,
-    UpdateOwner
+    UpdateOwner,
+    Detail
   },
   data() {
     return {
@@ -160,6 +169,7 @@ export default {
       currentPage: 1,
       showDeleteDialog: false,
       showEditDialog: false,
+      showDetailDialog: false,
       pagination: {
         keyword: ""
       },
@@ -215,6 +225,7 @@ export default {
       };
     },
     onSubmitAddHandler(value) {
+      this.$isLoading(true);
       this.createOwner(value)
         .then((result) => {
           if (result.message ==="common_success") {
@@ -239,9 +250,11 @@ export default {
         })
         .finally(() => {
           this.showAddOwnerDialog = false;
+          this.$isLoading(false);
         });
     },
     onSubmitEditHandler(value) {
+      this.$isLoading(true);
       this.updateOwner(value)
         .then((result) => {
           if (result.message ==="common_success") {
@@ -270,16 +283,26 @@ export default {
         })
         .finally(() => {
           this.showEditDialog = false;
+          this.$isLoading(false);
         });
     },
     handleInfor(_,row) {
-      this.$router.push(`/owner-site/${row.id}`)
+      this.selectedOwner = row;
+      this.showDetailDialog = true;
+    },
+    onCancelDetailHandler() {
+      this.showDetailDialog = false;
+    },
+    onSubmitDetailHandler(value) {
+      this.selectedOwner = value;
+      this.showDetailDialog = false;
+      this.showEditDialog = true;
     },
     onCancelEditHandler() {
       this.showEditDialog = false;
     },
     onCancelAddHandler() {
-      this.showAddPetDialog = false;
+      this.showAddOwnerDialog = false;
     },
     redirectAdd() {
       (this.addOwner = {}), (this.showAddOwnerDialog = true);

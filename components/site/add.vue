@@ -37,6 +37,7 @@
           >
           </el-input>
         </el-form-item>
+
         <el-form-item label="Mật khẩu:" prop="password">
           <el-input
             class="group-name"
@@ -46,6 +47,7 @@
           >
           </el-input>
         </el-form-item>
+        
         <el-form-item label="Name:" prop="name">
           <el-input
             class="group-name"

@@ -182,9 +182,6 @@ export default {
   },
   data() {
     return {
-      datePickerOptionsEndDate: {
-        disabledDate: this.disabledEndDate
-      },
       itemSync: {
         status: 0,
         name: "",
@@ -250,12 +247,6 @@ export default {
     }
   },
   methods: {
-    disabledEndDate(date) {
-      const beforeDate = new Date();
-      return this.itemSync.petDob == ""
-        ? date >= beforeDate.setDate(beforeDate.getDate())
-        : (date = this.itemSync.petDob);
-    },
     handleClose(done) {
       // handle previous close
       this.onCancelHandler();

@@ -53,7 +53,7 @@ const actions = {
   },
 
   async [ActionTypes.OWNER_DELETE](_, id) {
-    const response = this.$axios.$delete(`/admin/sites/${id}`);
+    const response = await this.$axios.$delete(`/admin/sites/${id}`);
     return response;
   }
 };

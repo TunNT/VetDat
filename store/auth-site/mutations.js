@@ -7,10 +7,8 @@ const mutations = {
   },
 
   [MutationTypes.SET_CURRENT_SITE](state, { data }) {
-    state.me = data;
+    state.siteMe = data;
     state.isSite = 2;
-    state.canEdit = true;
-    state.canDelete = true;
   },
 
   [MutationTypes.SET_LOADING](state, value) {
@@ -18,11 +16,8 @@ const mutations = {
   },
 
   [MutationTypes.RESET_SITE](state) {
-    state.me = {};
+    state.siteMe = {};
     state.isSite = 0;
-    state.permissions = [];
-    state.canEdit = false;
-    state.canDelete = false;
     localStorage.removeItem('access-token-site');
   }
 };

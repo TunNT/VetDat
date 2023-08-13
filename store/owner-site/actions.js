@@ -5,7 +5,7 @@ const actions = {
   async [ActionTypes.OWNER_SITE_LIST]({ commit }, payload) {
     commit(MutationTypes.SET_LOADING, true);
     try {
-      const response = await this.$axios.$get("/site/owners", {
+      const response = await this.$axios.$get("/shop/owners", {
         params: payload,
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
@@ -25,7 +25,7 @@ const actions = {
     let response;
     try {
       response = await this.$axios.$post(
-        "/site/owners",
+        "/shop/owners",
         {
           ...payload
         },
@@ -47,7 +47,7 @@ const actions = {
     commit(MutationTypes.SET_LOADING, true);
     let owner = {};
     try {
-      owner = await this.$axios.$get(`/site/owners/${_id}`,{
+      owner = await this.$axios.$get(`/shop/owners/${_id}`,{
         headers: {
           Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
         }
@@ -63,7 +63,7 @@ const actions = {
   },
 
   [ActionTypes.OWNER_SITE_UPDATE](_, payload) {
-    const response = this.$axios.$put(`/site/owners/${payload.id}`, payload, {
+    const response = this.$axios.$put(`/shop/owners/${payload.id}`, payload, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("access-token-site")}`
       }
@@ -71,10 +71,6 @@ const actions = {
     return response;
   },
 
-  async [ActionTypes.OWNER_DELETE](_, id) {
-    const response = this.$axios.$delete(`/admin/sites/${id}`);
-    return response;
-  }
 };
 
 export default actions;

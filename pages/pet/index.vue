@@ -3,12 +3,19 @@
     <template>
       <div class="header-title-pet">
         <span>Tìm kiếm thú cưng</span>
-        <SearchInput :placeholder="'Nhập để tìm kiếm'" :clearable="true" class="search-pet"
-          @onChangeHandler="onChangeHandler" />
+        <SearchInput
+          :placeholder="'Nhập để tìm kiếm'"
+          :clearable="true"
+          class="search-pet"
+          @onChangeHandler="onChangeHandler"
+        />
       </div>
     </template>
     <template class="main">
-      <b-container class="main-container-empty" v-if="pagination.keyword == '' || isPetsEmpty">
+      <b-container
+        class="main-container-empty"
+        v-if="pagination.keyword == '' || isPetsEmpty"
+      >
         <h3 class="title">
           Thông tin của thú cưng
         </h3>
@@ -25,11 +32,29 @@
               </li>
               <li class="field-item">
                 <span class="field-label">Trạng thái:</span>
-                <span class="field-value">{{ pets.status }}</span>
+                <span class="field-value">
+                  {{
+                    pets.status === 0
+                      ? "chưa kích hoạt"
+                      : pets.status === 1
+                      ? "kích hoạt"
+                      : pets.status === 2
+                      ? "Thử nghiệm"
+                      : pets.status === 3
+                      ? "Đình chỉ"
+                      : "Hết hạn"
+                  }}</span
+                >
               </li>
               <li class="field-item">
                 <span class="field-label">Loại thú cưng:</span>
-                <span class="field-value">{{ pets.petType }}</span>
+                <span class="field-value">{{ pets.petType === 0
+                                    ? "Không xác định"
+                                    : pets.petType === 1
+                                        ? "Chó"
+                                        : pets.petType === 3
+                                            ? "Mèo"
+                                            : "Thỏ" }}</span>
               </li>
               <li class="field-item">
                 <span class="field-label">Giống vật nuôi:</span>
@@ -37,11 +62,19 @@
               </li>
               <li class="field-item">
                 <span class="field-label">Giới tính:</span>
-                <span class="field-value">{{ pets.petSex }}</span>
+                <span class="field-value">{{ pets.petSex === 0
+                                    ? "Không xác định"
+                                    : pets.petSex === 1
+                                        ? "Đực"
+                                        : "Cái" }}</span>
               </li>
               <li class="field-item">
                 <span class="field-label">Triệt sản:</span>
-                <span class="field-value">{{ pets.petTriet }}</span>
+                <span class="field-value">{{ pets.petTriet === 0
+                                    ? "Không xác định"
+                                    : pets.petTriet === 1
+                                        ? "Có"
+                                        : "Chưa" }}</span>
               </li>
               <li class="field-item">
                 <span class="field-label">Màu sắc vật nuôi:</span>
@@ -71,14 +104,14 @@
                 <span class="field-label">Trạng thái::</span>
                 <span class="field-value">{{
                   pets.owner.status === 0
-                  ? "not activated "
-                  : pets.owner.status === 1
+                    ? "not activated "
+                    : pets.owner.status === 1
                     ? "Ok"
                     : pets.owner.status === 2
-                      ? "demo"
-                      : pets.owner.status === 3
-                        ? "suspend"
-                        : "expired"
+                    ? "demo"
+                    : pets.owner.status === 3
+                    ? "suspend"
+                    : "expired"
                 }}</span>
               </li>
               <!-- Repeat the above <li> structure for the remaining fields -->
@@ -109,14 +142,14 @@
                 <span class="field-label">Trạng thái::</span>
                 <span class="field-value">{{
                   pets.site.status === 0
-                  ? "not activated "
-                  : pets.site.status === 1
+                    ? "not activated "
+                    : pets.site.status === 1
                     ? "Ok"
                     : pets.site.status === 2
-                      ? "demo"
-                      : pets.site.status === 3
-                        ? "suspend"
-                        : "expired"
+                    ? "demo"
+                    : pets.site.status === 3
+                    ? "suspend"
+                    : "expired"
                 }}</span>
               </li>
               <li class="field-item">
@@ -148,20 +181,35 @@
           <b-col cols="12">
             <div class="text-center mt-5">
               <el-button class="btn-cancel" @click="onBackHome">Hủy</el-button>
-              <el-button class="btn-create" @click="handleEdit(pets)">Sửa</el-button>
-              <el-button class="btn-delete" @click="handleDelete(pets)">Xóa</el-button>
+              <el-button class="btn-create" @click="handleEdit(pets)"
+                >Sửa</el-button
+              >
+              <el-button class="btn-delete" @click="handleDelete(pets)"
+                >Xóa</el-button
+              >
             </div>
           </b-col>
         </b-row>
       </div>
     </template>
 
-    <YesNoDialog :dialogVisible="showDeleteDialog" :onCancelHandler="onCancelDeleteHandler"
-      :onSubmitHandler="onSubmitDeleteHandler" :msgNotify="'bạn có muốn xóa thú cưng này?'" :title="'Xác nhận'" />
-    <updatePet :dialogVisible="showEditDialog" :onCancelHandler="onCancelEditHandler"
-      :onSubmitHandler="onSubmitEditHandler" :itemSelected="selectedPet" :options="statuses"
-      :optionsPetTriet="optionsPetTriet" :optionsPetType="optionsPetType" :optionsPetSex="optionsPetSex"
-      :listOwner=owners.data :listSite="sites.data" />
+    <YesNoDialog
+      :dialogVisible="showDeleteDialog"
+      :onCancelHandler="onCancelDeleteHandler"
+      :onSubmitHandler="onSubmitDeleteHandler"
+      :msgNotify="'bạn có muốn xóa thú cưng này?'"
+      :title="'Xác nhận'"
+    />
+    <updatePet
+      :dialogVisible="showEditDialog"
+      :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler"
+      :itemSelected="selectedPet"
+      :options="statuses"
+      :optionsPetTriet="optionsPetTriet"
+      :optionsPetType="optionsPetType"
+      :optionsPetSex="optionsPetSex"
+    />
   </div>
 </template>
 <style>
@@ -346,16 +394,16 @@ export default {
         {
           label: "Cái",
           value: 2
-        },
+        }
       ]
     };
   },
   computed: {
     ...mapGetters({
       loading: "pet/loading",
-      pets: "pet/pets",
-      owners: "owner/owners",
-      sites: "site/sites"
+      pets: "pet/pets"
+      // owners: "owner/owners",
+      // sites: "site/sites"
     }),
     isPetsEmpty() {
       return this.pets.length === 0;
@@ -365,9 +413,9 @@ export default {
     ...mapActions({
       getPetList: "pet/PET_LIST",
       updatePet: "pet/PET_UPDATE",
-      deletePet: "pet/PET_DELETE",
-      getOwnerList: "owner/OWNER_LIST",
-      getSiteList: "site/SITE_LIST",
+      deletePet: "pet/PET_DELETE"
+      // getOwnerList: "owner/OWNER_LIST",
+      // getSiteList: "site/SITE_LIST",
     }),
     onChangeHandler(val) {
       this.pagination.keyword = val;
@@ -383,34 +431,36 @@ export default {
       };
     },
     onSubmitEditHandler(value) {
+      this.$isLoading(true);
       this.updatePet(value)
-        .then((result) => {
+        .then(result => {
           if (result.message === "common_success") {
-            this.getPetList(_.pickBy(this.pagination, (value) => value));
+            this.getPetList(_.pickBy(this.pagination, value => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success",
+              type: "success"
             });
           } else {
             this.$notify({
               group: "all",
               title: "Cập nhật thất bại",
               type: "error",
-              text: error,
+              text: error
             });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$notify({
             group: "all",
             title: "Cập nhật thất bại",
             type: "error",
-            text: error,
+            text: error
           });
         })
         .finally(() => {
           this.showEditDialog = false;
+          this.$isLoading(false);
         });
     },
     onCancelEditHandler() {
@@ -423,8 +473,9 @@ export default {
       this.$router.push("/pet");
     },
     onSubmitDeleteHandler() {
+      this.$isLoading(true);
       this.deletePet(this.selectedPet.id)
-        .then((result) => {
+        .then(result => {
           if (result.message === "common_success") {
             this.getPetList(_.pickBy(this.pagination, value => value));
             this.$notify({
@@ -432,7 +483,7 @@ export default {
               title: "Xóa thành công",
               type: "success"
             });
-            this.pagination.keyword = '';
+            this.pagination.keyword = "";
           } else {
             this.$notify({
               group: "all",
@@ -454,6 +505,7 @@ export default {
         })
         .finally(() => {
           this.showDeleteDialog = false;
+          this.$isLoading(false);
         });
     },
 
@@ -476,8 +528,8 @@ export default {
     pagination: {
       handler(val) {
         this.getPetList(_.pickBy(val, value => value));
-        this.getOwnerList();
-        this.getSiteList();
+        // this.getOwnerList();
+        // this.getSiteList();
       },
       deep: true
     }
@@ -485,8 +537,8 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.getPetList(_.pickBy(vm.pagination, value => value));
-      vm.getOwnerList();
-      vm.getSiteList();
+      // vm.getOwnerList();
+      // vm.getSiteList();
     });
   }
 };

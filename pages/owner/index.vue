@@ -149,8 +149,8 @@ import UpdateOwner from "@/components/owner/edit";
 import SearchInput from "@components/SearchInput";
 export default {
   layout: "private",
-  // middleware: "authenticated",
-  // middleware: "permission",
+  middleware: "authenticated",
+  middleware: "permission",
   components: {
     SearchInput,
     UpdateOwner
@@ -225,6 +225,7 @@ export default {
     },
 
     onSubmitEditHandler(value) {
+      this.$isLoading(true);
       this.updateOwner(value)
         .then((result) => {
           if (result.message ==="common_success") {
@@ -253,14 +254,16 @@ export default {
         })
         .finally(() => {
           this.showEditDialog = false;
+          this.$isLoading(false);
         });
     },
 
     onSubmitDeleteHandler() {
-      this.deleteUser(this.selectedUser.id)
-        .then(({ message, error }) => {
-          if (message === "SUCCESS") {
-            this.getUserList(_.pickBy(this.pagination, value => value));
+      this.$isLoading(true);
+      this.deleteOwner(this.selectedOwner.id)
+      .then((result) => {
+          if (result.message === "common_success") {
+            this.getOwnerList(_.pickBy(this.pagination, value => value));
             this.$notify({
               group: "all",
               title: "Xóa thành công",
@@ -287,6 +290,7 @@ export default {
         })
         .finally(() => {
           this.showDeleteDialog = false;
+          this.$isLoading(false);
         });
     },
 

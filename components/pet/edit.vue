@@ -39,6 +39,9 @@
                             </template>
                         </el-form-item>
 
+                    </b-col>
+                    <b-col cols="6">
+
                         <el-form-item label="Triệt sản:">
                             <template>
                                 <el-select v-model="itemSync.petTriet" placeholder="Triệt sản:">
@@ -48,10 +51,7 @@
                                 </el-select>
                             </template>
                         </el-form-item>
-
-                    </b-col>
-                    <b-col cols="6">
-                        <el-form-item label="Chủ sở hữu:">
+                        <!-- <el-form-item label="Chủ sở hữu:">
                             <template>
                                 <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
                                     <el-option v-for="item in listOwner" :key="item.id" :label="item.name" :value="item.id">
@@ -62,16 +62,15 @@
 
                         <el-form-item label="Chọn site:">
                             <template>
-                                <el-select v-model="itemSync.siteId" placeholder="Chủ sở hữu:">
+                                <el-select v-model="itemSync.siteId" placeholder="Chọn site:">
                                     <el-option v-for="item in listSite" :key="item.id" :label="item.login" :value="item.id">
                                     </el-option>
                                 </el-select>
                             </template>
-                        </el-form-item>
+                        </el-form-item> -->
 
                         <el-form-item label="Thời gian sinh:" prop="petDob">
-                            <el-date-picker v-model="itemSync.petDob" arrow-control placeholder="Pick time"
-                                :picker-options="datePickerOptionsEndDate">
+                            <el-date-picker v-model="itemSync.petDob" arrow-control placeholder="Pick time">
                             </el-date-picker>
                         </el-form-item>
                     </b-col>
@@ -213,20 +212,17 @@ export default {
             type: Array,
             default: () => []
         },
-        listOwner: {
-            type: Array,
-            default: () => []
-        },
-        listSite: {
-            type: Array,
-            default: () => []
-        },
+        // listOwner: {
+        //     type: Array,
+        //     default: () => []
+        // },
+        // listSite: {
+        //     type: Array,
+        //     default: () => []
+        // },
     },
     data() {
         return {
-            datePickerOptionsEndDate: {
-                disabledDate: this.disabledEndDate
-            },
             itemSync: {
                 id: "",
                 status: 0,
@@ -340,12 +336,6 @@ export default {
         }
     },
     methods: {
-        disabledEndDate(date) {
-            const beforeDate = new Date();
-            return this.itemSync.petDob == ""
-                ? date >= beforeDate.setDate(beforeDate.getDate())
-                : date = this.itemSync.petDob;
-        },
         handleClose(done) {
             // handle previous close
             this.onCancelHandler();

@@ -2,7 +2,7 @@
     <div class="login_container">
         <b-container fluid class="text-center">
             <b-row class="m-auto" style="width: 370px">
-                <nuxt-link to="/search">
+                <nuxt-link to="/login-site">
                     <b-col cols="12" class="d-flex col-12 align-items-center justify-content-center mb-3">
                         <h1 class="title">VetDat site</h1>
                     </b-col>
@@ -76,7 +76,7 @@ export default {
     methods: {
         ...mapActions({
             login: "auth-site/AUTH_SITE_LOGIN",
-            fetchCurrentUser: "auth-site/GET_ME",
+            fetchCurrentUser: "auth-site/GET_SITE_ME",
         }),
         onLoginHandler() {
             this.$refs.formLogin.validate((valid) => {
@@ -97,6 +97,7 @@ export default {
                                     type: "success",
                                 });
                                 this.$router.push("/pet-site");
+                                this.$isLoading(false);
                             }
                         })
                         .catch((error) => {

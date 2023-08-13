@@ -50,7 +50,7 @@ export default {
     ],
 
     router: {
-        middleware: "isValidToken",
+        middleware:['isValidToken','isValidTokenSite'],
     },
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -66,7 +66,7 @@ export default {
 
     axios: {
         proxy: true,
-        baseURL: "https://chip.techzpet.com/",
+        baseURL: process.env.API_BASE_URL,
         https: process.env.NODE_ENV === 'production' ? true : false,
         credentials: true,
         retry: { retries: 3 },
@@ -99,14 +99,14 @@ export default {
 
     proxy: {
         '/admin': {
-            target: "https://chip.techzpet.com",
+            target: process.env.API_BASE_URL,
             //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
             pathRewrite: { '^/admin': '/api-admin' },
         },
-        '/site': {
-            target: "https://chip.techzpet.com",
+        '/shop': {
+            target: process.env.API_BASE_URL,
             //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
-            pathRewrite: { '^/site': '/api-site' },
+            pathRewrite: { '^/shop': '/api-site' },
         },
     }
 

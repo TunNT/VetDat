@@ -16,17 +16,59 @@
         label-position="left"
         size="small"
       >
-        <el-form-item label="Mã định danh pet:" prop="id">
-          <el-input
-            class="group-name"
-            placeholder="Vui lòng nhập mã định danh pet"
-            v-model="itemSync.id"
-          >
-          </el-input>
-        </el-form-item>
-        <b-row>
-          <b-col cols="6"
-            ><el-form-item label="Trạng thái:">
+        <b-row class="mb-3">
+          <b-col cols="6">
+            <el-form-item label="File:" prop="file">
+              <el-input v-model="itemSync.file"></el-input>
+              <template>
+                <el-row class="m-auto">
+                  <input
+                    type="file"
+                    ref="fileInput"
+                    @change="handleFileChange"
+                  />
+                </el-row>
+                <img
+                  class="file-image"
+                  v-if="itemSync.selectedFile"
+                  :src="itemSync.selectedFileURL"
+                  style="max-width: 100%"
+                />
+                <el-button
+                  size="small"
+                  v-if="itemSync.selectedFile"
+                  @click="cancelFileSelection"
+                  >Hủy chọn</el-button
+                >
+              </template>
+            </el-form-item>
+          
+          </b-col>
+          <b-col cols="6" class="layout-input">
+            <el-form-item label="Mã định danh pet:" prop="id">
+              <el-input
+                class="group-name"
+                placeholder="Vui lòng nhập mã định danh pet"
+                v-model="itemSync.id"
+              >
+              </el-input>
+            </el-form-item>
+
+            <el-form-item label="Chủ sở hữu:">
+              <template>
+                <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
+                  <el-option
+                    v-for="item in listOwner"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
+            </el-form-item>
+
+            <el-form-item label="Trạng thái:">
               <template>
                 <el-select v-model="itemSync.status" placeholder="Trạng thái:">
                   <el-option
@@ -70,21 +112,6 @@
                 </el-select>
               </template>
             </el-form-item>
-          </b-col>
-          <b-col cols="6">
-            <el-form-item label="Chủ sở hữu:">
-              <template>
-                <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
-                  <el-option
-                    v-for="item in listOwner"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  >
-                  </el-option>
-                </el-select>
-              </template>
-            </el-form-item>
 
             <el-form-item label="Triệt sản:">
               <template>
@@ -105,7 +132,6 @@
                 v-model="itemSync.petDob"
                 arrow-control
                 placeholder="Pick time"
-                :picker-options="datePickerOptionsEndDate"
               >
               </el-date-picker>
             </el-form-item>
@@ -160,6 +186,9 @@
   </div>
 </template>
 <style>
+.layout-input {
+  border-left: 1px solid !important;
+}
 .btn-cancel-group {
   background-color: #f5f5f5;
   color: #003049;
@@ -170,7 +199,7 @@
   font-weight: 700;
 }
 .btn-add-group {
-  background-color: #b3c0d1!important;
+  background-color: #b3c0d1 !important;
   color: #003049;
   border: none;
   width: 104px;
@@ -271,9 +300,6 @@ export default {
   },
   data() {
     return {
-      datePickerOptionsEndDate: {
-        disabledDate: this.disabledEndDate
-      },
       itemSync: {
         id: "",
         status: 0,
@@ -285,7 +311,11 @@ export default {
         petName: "",
         petDob: "",
         notes: "",
-        ownerId: 0
+        ownerId: 0,
+        file: "",
+        selectedFile: null,
+        selectedFileURL: "",
+        selectedFileBase64: '',
       },
       rules: {
         id: [
@@ -379,12 +409,48 @@ export default {
     }
   },
   methods: {
-    disabledEndDate(date) {
-      const beforeDate = new Date();
-      return this.itemSync.petDob == ""
-        ? date >= beforeDate.setDate(beforeDate.getDate())
-        : date = this.itemSync.petDob;
+    openFileInput() {
+      this.$refs.fileInput.click();
     },
+    handleFileChange(event) {
+      const file = event.target.files[0];
+      if (file) {
+        this.itemSync.file = file.name;
+        this.itemSync.selectedFile = file;
+        this.itemSync.selectedFileURL = URL.createObjectURL(file);
+        this.reduceQualityAndConvertToBase64(file);
+      }
+    },
+    reduceQualityAndConvertToBase64(file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0);
+          canvas.toBlob((blob) => {
+            const reducedFile = new File([blob], file.name, { type: file.type });
+            const reader = new FileReader();
+            reader.onloadend = () => {
+              this.itemSync.selectedFileBase64 = reader.result;
+            };
+            reader.readAsDataURL(reducedFile);
+          }, file.type, 0.7); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
+        };
+        img.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+    cancelFileSelection() {
+      this.$set(this.itemSync, 'file', '');
+      this.itemSync.selectedFile = null;
+      this.itemSync.selectedFileURL = '';
+      // Reset the file input value if needed
+      this.$refs.fileInput.value = '';
+        },
     handleClose(done) {
       // handle previous close
       this.onCancelHandler();

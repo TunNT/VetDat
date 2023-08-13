@@ -15,6 +15,13 @@
     >
       <el-table-column
         min-width="100"
+        prop="login"
+        label="Tên đăng nhập"
+        sortable="custom"
+      ></el-table-column>
+
+      <el-table-column
+        min-width="100"
         prop="name"
         label="Tên"
         sortable="custom"
@@ -29,14 +36,14 @@
         <template slot-scope="scope">
           {{
             scope.row.status === 0
-              ? "not activated "
+              ? "Chưa kích hoạt"
               : scope.row.status === 1
-              ? "Ok"
+              ? "đang hoạt động"
               : scope.row.status === 2
-              ? "demo"
+              ? "Thử nghiệm"
               : scope.row.status === 3
-              ? "suspend"
-              : "expired"
+              ? "Đình chỉ"
+              : "Hết hạn"
           }}
         </template>
       </el-table-column>
@@ -249,6 +256,7 @@ export default {
       };
     },
     onSubmitAddHandler(value) {
+      this.$isLoading(true);
       this.createSite(value)
         .then((result) => {
           if (result.message ==="common_success") {
@@ -272,10 +280,12 @@ export default {
           });
         })
         .finally(() => {
-          this.showAddSiteDialog = true;
+          this.showAddSiteDialog = false;
+          this.$isLoading(false);
         });
     },
     onSubmitEditHandler(value) {
+      this.$isLoading(true);
       this.updateSite(value)
         .then((result) => {
           if (result.message === "common_success") {
@@ -304,6 +314,7 @@ export default {
         })
         .finally(() => {
           this.showEditDialog = false;
+          this.$isLoading(false);
         });
     },
     onCancelEditHandler() {
@@ -313,9 +324,10 @@ export default {
       this.showDeleteDialog = false;
     },
     onSubmitDeleteHandler() {
+      this.$isLoading(true);
       this.deleteSite(this.selectedSite.id)
-        .then(({ message, error }) => {
-          if (message === "common_success") {
+        .then((result) => {
+          if (result.message === "common_success") {
             this.getSiteList(_.pickBy(this.pagination, value => value));
             this.$notify({
               group: "all",
@@ -343,6 +355,7 @@ export default {
         })
         .finally(() => {
           this.showDeleteDialog = false;
+          this.$isLoading(false);
         });
     },
 

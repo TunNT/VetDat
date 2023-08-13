@@ -26,7 +26,7 @@
         label="Trạng thái"
         sortable="custom"
       >
-        <!-- <template slot-scope="scope">
+        <template slot-scope="scope">
           {{
             scope.row.status === 0
               ? "chưa kích hoạt"
@@ -35,10 +35,10 @@
               : scope.row.status === 2
               ? "Thử nghiệm"
               : scope.row.status === 3
-              ? "Trì hoãn"
+              ? "Đình chỉ"
               : "Hết hạn"
           }}
-        </template> -->
+        </template>
       </el-table-column>
 
       <el-table-column
@@ -53,14 +53,36 @@
         prop="petSex"
         label="Giới tính"
         sortable="custom"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{
+            scope.row.petSex === 0
+              ? "Không xác định"
+              : scope.row.petSex === 1
+              ? "Đực"
+              : "Cái"
+          }}
+        </template>
+      </el-table-column>
 
       <el-table-column
         min-width="100"
         prop="petType"
         label="Loại thú cưng"
         sortable="custom"
-      ></el-table-column>
+      >
+        <template slot-scope="scope">
+          {{
+            scope.row.petType === 0
+              ? "Không xác định"
+              : scope.row.petType === 1
+              ? "Chó"
+              : scope.row.petType === 3
+              ? "Mèo"
+              : "Thỏ"
+          }}
+        </template>
+      </el-table-column>
 
       <el-table-column
         min-width="100"
@@ -104,9 +126,7 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleInfor(scope.$index, scope.row)"
+          <el-button size="mini" @click="handleInfor(scope.$index, scope.row)"
             >Chi tiết</el-button
           >
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -124,12 +144,19 @@
       :optionsPetTriet="optionsPetTriet"
       :optionsPetType="optionsPetType"
       :optionsPetSex="optionsPetSex"
-      :listOwner=ownerSites.data
+      :listOwner="ownerSites.data"
     />
-    <updatePet :dialogVisible="showEditDialog" :onCancelHandler="onCancelEditHandler"
-      :onSubmitHandler="onSubmitEditHandler" :itemSelected="selectedPet" :options="statuses"
-      :optionsPetTriet="optionsPetTriet" :optionsPetType="optionsPetType" :optionsPetSex="optionsPetSex"
-      :listOwner=ownerSites.data />
+    <updatePet
+      :dialogVisible="showEditDialog"
+      :onCancelHandler="onCancelEditHandler"
+      :onSubmitHandler="onSubmitEditHandler"
+      :itemSelected="selectedPet"
+      :options="statuses"
+      :optionsPetTriet="optionsPetTriet"
+      :optionsPetType="optionsPetType"
+      :optionsPetSex="optionsPetSex"
+      :listOwner="ownerSites.data"
+    />
   </div>
 </template>
 <style>
@@ -217,7 +244,6 @@ export default {
   layout: "private",
   middleware: "authenticatedSite",
   middleware: "permissionSite",
-  middleware: "isValidTokenSite",
   components: {
     SearchInput,
     addPet,
@@ -300,7 +326,7 @@ export default {
         {
           label: "Cái",
           value: 2
-        },
+        }
       ]
     };
   },
@@ -319,7 +345,7 @@ export default {
       getPetSiteList: "pet-site/PET_SITE_LIST",
       createPet: "pet-site/PET_SITE_CREATE",
       updatePet: "pet-site/PET_SITE_UPDATE",
-      getOwnerSiteList: "owner-site/OWNER_SITE_LIST",
+      getOwnerSiteList: "owner-site/OWNER_SITE_LIST"
     }),
     onChangeHandler(val) {
       this.pagination.keyword = val;
@@ -337,65 +363,68 @@ export default {
         ...sort
       };
     },
-    handleInfor(_,row) {
-      this.$router.push(`/pet-site/${row.id}`)
+    handleInfor(_, row) {
+      this.$router.push(`/pet-site/${row.id}`);
     },
     onSubmitAddHandler(value) {
-      this.createPet(value)
-        .then((result) => {
-          if (result.message ==="common_success") {
+      const { selectedFile, selectedFileURL, file, ...newValue } = value;
+      this.$isLoading(true);
+      this.createPet(newValue)
+        .then(result => {
+          if (result.message === "common_success") {
             this.$notify({
               group: "all",
               title: "Thêm thành công!",
-              type: "success",
+              type: "success"
             });
-            this.getPetSiteList(
-              _.pickBy(this.pagination, (value) => value)
-            );
+            this.getPetSiteList(_.pickBy(this.pagination, value => value));
             this.showAddPetDialog = false;
             this.$router.push("/pet-site");
-          } 
+          }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$notify({
             group: "all",
             title: `"Thú cưng"đã tồn tại`,
-            type: "error",
+            type: "error"
           });
         })
         .finally(() => {
           this.showAddPetDialog = false;
+          this.$isLoading(false);
         });
     },
     onSubmitEditHandler(value) {
+      this.$isLoading(true);
       this.updatePet(value)
-        .then((result) => {
+        .then(result => {
           if (result.message === "common_success") {
-            this.getPetSiteList(_.pickBy(this.pagination, (value) => value));
+            this.getPetSiteList(_.pickBy(this.pagination, value => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success",
+              type: "success"
             });
           } else {
             this.$notify({
               group: "all",
               title: "Cập nhật thất bại",
               type: "error",
-              text: error,
+              text: error
             });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$notify({
             group: "all",
             title: "Cập nhật thất bại",
             type: "error",
-            text: error,
+            text: error
           });
         })
         .finally(() => {
           this.showEditDialog = false;
+          this.$isLoading(false);
         });
     },
     onCancelEditHandler() {
