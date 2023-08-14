@@ -25,8 +25,11 @@
           <h3 class="title-content-pet">
             Thông tin của thú cưng có mã định danh: {{ pets.id }}
           </h3>
-          <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
-            <ul class="field-list">
+          <b-col cols="12" md="3" lg="3" class="mt-5 text-center">
+            <img :src=pets.avatar alt="#" style="width: 100%">
+          </b-col>
+          <b-col cols="12" md="3" lg="3" class="mt-5 text-center">
+            <ul class="field-list container-detail">
               <li class="field-item">
                 <span class="field-label-title">Thú cưng</span>
               </li>
@@ -95,8 +98,8 @@
               </li>
             </ul>
           </b-col>
-          <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
-            <ul class="field-list">
+          <b-col cols="12" md="3" lg="3" class="mt-5 text-center">
+            <ul class="field-list container-detail">
               <li class="field-item">
                 <span class="field-label-title">Chủ sở hữu</span>
               </li>
@@ -133,8 +136,8 @@
               </li>
             </ul>
           </b-col>
-          <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
-            <ul class="field-list">
+          <b-col cols="12" md="3" lg="3" class="mt-5 text-center">
+            <ul class="field-list container-detail">
               <li class="field-item">
                 <span class="field-label-title">Site</span>
               </li>
@@ -213,6 +216,12 @@
   </div>
 </template>
 <style>
+.container-detail {
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  padding: 20px!important;
+  background-color: #fff;
+  height: 100%;
+}
 .btn-delete {
   background-color: #f78989;
 }

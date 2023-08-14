@@ -15,6 +15,17 @@
     >
       <el-table-column
         min-width="70"
+        prop="avatar"
+        label="avatar"
+        sortable="custom"
+      >
+      <template slot-scope="scope">
+        <img :src=scope.row.avatar alt="#" style="width: 100%">
+        </template>
+    </el-table-column>
+
+      <el-table-column
+        min-width="70"
         prop="id"
         label="Mã định danh"
         sortable="custom"
@@ -43,13 +54,6 @@
 
       <el-table-column
         min-width="100"
-        prop="petColor"
-        label="Màu sắc"
-        sortable="custom"
-      ></el-table-column>
-
-      <el-table-column
-        min-width="100"
         prop="petSex"
         label="Giới tính"
         sortable="custom"
@@ -61,25 +65,6 @@
               : scope.row.petSex === 1
               ? "Đực"
               : "Cái"
-          }}
-        </template>
-      </el-table-column>
-
-      <el-table-column
-        min-width="100"
-        prop="petType"
-        label="Loại thú cưng"
-        sortable="custom"
-      >
-        <template slot-scope="scope">
-          {{
-            scope.row.petType === 0
-              ? "Không xác định"
-              : scope.row.petType === 1
-              ? "Chó"
-              : scope.row.petType === 3
-              ? "Mèo"
-              : "Thỏ"
           }}
         </template>
       </el-table-column>
@@ -396,7 +381,8 @@ export default {
     },
     onSubmitEditHandler(value) {
       this.$isLoading(true);
-      this.updatePet(value)
+      const { selectedFile, selectedFileURL, file, avatar, ...newValue } = value;
+      this.updatePet(newValue)
         .then(result => {
           if (result.message === "common_success") {
             this.getPetSiteList(_.pickBy(this.pagination, value => value));

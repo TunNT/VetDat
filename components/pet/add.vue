@@ -315,7 +315,7 @@ export default {
         file: "",
         selectedFile: null,
         selectedFileURL: "",
-        selectedFileBase64: '',
+        fileBase64: '',
       },
       rules: {
         id: [
@@ -435,7 +435,7 @@ export default {
             const reducedFile = new File([blob], file.name, { type: file.type });
             const reader = new FileReader();
             reader.onloadend = () => {
-              this.itemSync.selectedFileBase64 = reader.result;
+              this.itemSync.fileBase64 = reader.result;
             };
             reader.readAsDataURL(reducedFile);
           }, file.type, 0.7); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
