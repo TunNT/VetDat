@@ -19,10 +19,12 @@
         <b-row class="mb-3">
           <b-col cols="6">
             <el-form-item label="File:" prop="file">
-              <el-input v-model="itemSync.file"></el-input>
+              <el-input v-model="file"></el-input>
               <template>
                 <el-row class="m-auto">
+                  <el-button size="small" @click="openFileInput">Chọn tệp tin</el-button>
                   <input
+                  style="display: none"
                     type="file"
                     ref="fileInput"
                     @change="handleFileChange"
@@ -30,13 +32,13 @@
                 </el-row>
                 <img
                   class="file-image"
-                  v-if="itemSync.selectedFile"
-                  :src="itemSync.selectedFileURL"
+                  v-if="selectedFile"
+                  :src="selectedFileURL"
                   style="max-width: 100%"
                 />
                 <el-button
                   size="small"
-                  v-if="itemSync.selectedFile"
+                  v-if="selectedFile"
                   @click="cancelFileSelection"
                   >Hủy chọn</el-button
                 >
@@ -54,7 +56,7 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item label="Chủ sở hữu:">
+            <el-form-item label="Chủ sở hữu:" :rules="[{ required: true, message: 'Vui lòng chọn chủ sở hữu' }]">
               <template>
                 <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
                   <el-option
@@ -300,6 +302,9 @@ export default {
   },
   data() {
     return {
+      file: "",
+      selectedFile: null,
+      selectedFileURL: "",
       itemSync: {
         id: "",
         status: 0,
@@ -312,9 +317,6 @@ export default {
         petDob: "",
         notes: "",
         ownerId: 0,
-        file: "",
-        selectedFile: null,
-        selectedFileURL: "",
         fileBase64: '',
       },
       rules: {
@@ -415,9 +417,9 @@ export default {
     handleFileChange(event) {
       const file = event.target.files[0];
       if (file) {
-        this.itemSync.file = file.name;
-        this.itemSync.selectedFile = file;
-        this.itemSync.selectedFileURL = URL.createObjectURL(file);
+        this.file = file.name;
+        this.selectedFile = file;
+        this.selectedFileURL = URL.createObjectURL(file);
         this.reduceQualityAndConvertToBase64(file);
       }
     },
@@ -445,9 +447,9 @@ export default {
       reader.readAsDataURL(file);
     },
     cancelFileSelection() {
-      this.$set(this.itemSync, 'file', '');
-      this.itemSync.selectedFile = null;
-      this.itemSync.selectedFileURL = '';
+      this.$set(this, 'file', '');
+      this.selectedFile = null;
+      this.selectedFileURL = '';
       // Reset the file input value if needed
       this.$refs.fileInput.value = '';
         },

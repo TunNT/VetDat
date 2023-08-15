@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog
-      :title="`Edit thú cưng ${itemSync.petName}`"
+      :title="`Sửa thú cưng ${itemSync.petName}`"
       :visible="dialogVisible"
       :before-close="handleClose"
       center
@@ -19,10 +19,12 @@
         <b-row>
           <b-col cols="6">
             <el-form-item label="File:" prop="file">
-              <el-input v-model="itemSync.file"></el-input>
+              <el-input v-model="file"></el-input>
               <template>
                 <el-row class="m-auto">
+                  <el-button size="small" @click="openFileInput">Chọn tệp tin</el-button>
                   <input
+                    style="display: none"
                     type="file"
                     ref="fileInput"
                     @change="handleFileChange"
@@ -30,13 +32,17 @@
                 </el-row>
                 <img
                   class="file-image"
-                  v-if="itemSync.selectedFile"
-                  :src="itemSync.selectedFileURL"
-                  style="max-width: 100%"
+                  v-if="selectedFile"
+                  :src="selectedFileURL"
+                />
+                <img
+                  v-else
+                  class="file-image"
+                  :src="itemSync.avatar"
                 />
                 <el-button
                   size="small"
-                  v-if="itemSync.selectedFile"
+                  v-if="selectedFile"
                   @click="cancelFileSelection"
                   >Hủy chọn</el-button
                 >
@@ -52,6 +58,21 @@
               >
               </el-input>
             </el-form-item>
+
+            <el-form-item label="Chủ sở hữu:">
+              <template>
+                <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
+                  <el-option
+                    v-for="item in listOwner"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </template>
+            </el-form-item>
+
             <el-form-item label="Trạng thái:">
               <template>
                 <el-select v-model="itemSync.status" placeholder="Trạng thái:">
@@ -96,14 +117,15 @@
                 </el-select>
               </template>
             </el-form-item>
-            <el-form-item label="Chủ sở hữu:">
+
+            <el-form-item label="Triệt sản:">
               <template>
-                <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
+                <el-select v-model="itemSync.petTriet" placeholder="Triệt sản:">
                   <el-option
-                    v-for="item in listOwner"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
+                    v-for="item in optionsPetTriet"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
                   >
                   </el-option>
                 </el-select>
@@ -119,19 +141,6 @@
               </el-date-picker>
             </el-form-item>
 
-            <el-form-item label="Triệt sản:">
-              <template>
-                <el-select v-model="itemSync.petTriet" placeholder="Triệt sản:">
-                  <el-option
-                    v-for="item in optionsPetTriet"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value"
-                  >
-                  </el-option>
-                </el-select>
-              </template>
-            </el-form-item>
           </b-col>
         </b-row>
 
@@ -175,6 +184,10 @@
   </div>
 </template>
 <style>
+.file-image {
+  max-width: 100%; 
+  margin-top: 15px
+}
 .btn-cancel-group {
   background-color: #f5f5f5;
   color: #003049;
@@ -294,6 +307,9 @@ export default {
   },
   data() {
     return {
+      file: "",
+      selectedFile: null,
+      selectedFileURL: "",
       itemSync: {
         id: "",
         status: 0,
@@ -305,9 +321,6 @@ export default {
         petName: "",
         petDob: "",
         ownerId: "",
-        file: "",
-        selectedFile: null,
-        selectedFileURL: "",
         fileBase64: '',
       },
       rules: {
@@ -401,9 +414,9 @@ export default {
     handleFileChange(event) {
       const file = event.target.files[0];
       if (file) {
-        this.itemSync.file = file.name;
-        this.itemSync.selectedFile = file;
-        this.itemSync.selectedFileURL = URL.createObjectURL(file);
+        this.file = file.name;
+        this.selectedFile = file;
+        this.selectedFileURL = URL.createObjectURL(file);
         this.reduceQualityAndConvertToBase64(file);
       }
     },
@@ -431,9 +444,9 @@ export default {
       reader.readAsDataURL(file);
     },
     cancelFileSelection() {
-      this.itemSync.file = "";
-      this.itemSync.selectedFile = null;
-      this.itemSync.selectedFileURL = "";
+      this.file = "";
+      this.selectedFile = null;
+      this.selectedFileURL = "";
       // Reset the file input value if needed
       this.$refs.fileInput.value = "";
     },
