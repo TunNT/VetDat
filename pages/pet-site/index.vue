@@ -19,10 +19,10 @@
         label="avatar"
         sortable="custom"
       >
-      <template slot-scope="scope">
-        <img :src=scope.row.avatar alt="#" style="width: 100%">
+        <template slot-scope="scope">
+          <img :src="scope.row.avatar" alt="#" style="width: 100%" />
         </template>
-    </el-table-column>
+      </el-table-column>
 
       <el-table-column
         min-width="70"
@@ -381,7 +381,17 @@ export default {
     },
     onSubmitEditHandler(value) {
       this.$isLoading(true);
-      const { selectedFile, selectedFileURL, file, avatar, ...newValue } = value;
+      const {
+        selectedFile,
+        selectedFileURL,
+        file,
+        avatar,
+        createdAt,
+        owner,
+        updatedAt,
+        statusDate,
+        ...newValue
+      } = value;
       this.updatePet(newValue)
         .then(result => {
           if (result.message === "common_success") {

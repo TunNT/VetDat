@@ -183,7 +183,6 @@
           </b-col>
           <b-col cols="12">
             <div class="text-center mt-5">
-              <el-button class="btn-cancel" @click="onBackHome">Hủy</el-button>
               <el-button class="btn-create" @click="handleEdit(pets)"
                 >Sửa</el-button
               >
@@ -478,9 +477,7 @@ export default {
     onCancelDeleteHandler() {
       this.showDeleteDialog = false;
     },
-    onBackHome() {
-      this.$router.push("/pet");
-    },
+   
     onSubmitDeleteHandler() {
       this.$isLoading(true);
       this.deletePet(this.selectedPet.id)

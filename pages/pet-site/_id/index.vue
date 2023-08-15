@@ -31,7 +31,7 @@
                                     ? "Không xác định"
                                     : petSite.petType === 1
                                         ? "Chó"
-                                        : petSite.petType === 3
+                                        : petSite.petType === 2
                                             ? "Mèo"
                                             : "Thỏ" }}</span>
                             </li>
