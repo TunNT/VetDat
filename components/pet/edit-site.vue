@@ -65,7 +65,7 @@
                   <el-option
                     v-for="item in listOwner"
                     :key="item.id"
-                    :label="item.name"
+                    :label="item.phone"
                     :value="item.id"
                   >
                   </el-option>

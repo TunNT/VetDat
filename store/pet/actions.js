@@ -17,6 +17,21 @@ const actions = {
     }
   },
 
+  async [ActionTypes.PET_SEARCH_GLOBAL]({ commit }, payload) {
+    commit(MutationTypes.SET_LOADING, true);
+    try {
+      const response = await this.$axios.$get("/global/pets", {
+        params: payload
+      });
+      commit(MutationTypes.SET_PET_SEARCH, response);
+    } catch (err) {
+      // handle error
+      commit(MutationTypes.SET_PET_SEARCH, {});
+    } finally {
+      commit(MutationTypes.SET_LOADING, false);
+    }
+  },
+
   async [ActionTypes.PET_CREATE]({ commit }, payload) {
     commit(MutationTypes.SET_LOADING, true);
     let response;

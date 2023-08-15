@@ -439,8 +439,19 @@ export default {
       };
     },
     onSubmitEditHandler(value) {
+      const {
+        selectedFile,
+        selectedFileURL,
+        file,
+        avatar,
+        createdAt,
+        owner,
+        updatedAt,
+        statusDate,
+        ...newValue
+      } = value;
       this.$isLoading(true);
-      this.updatePet(value)
+      this.updatePet(newValue)
         .then(result => {
           if (result.message === "common_success") {
             this.getPetList(_.pickBy(this.pagination, value => value));

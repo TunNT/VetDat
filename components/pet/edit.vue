@@ -4,12 +4,25 @@
             top="10vh" width="60%">
             <el-form ref="updateForm" :model="itemSync" :rules="rules" label-width="160px" label-position="left"
                 size="small">
-                <el-form-item label="Mã định danh pet:" prop="id">
-                    <el-input class="group-name" placeholder="Vui lòng nhập mã định danh pet" v-model="itemSync.id">
-                    </el-input>
-                </el-form-item>
                 <b-row>
-                    <b-col cols="6"><el-form-item label="Trạng thái:">
+                    <b-col cols="6">
+                        <el-form-item label="File:" prop="file">
+                            <el-input v-model="file"></el-input>
+                            <template>
+                                <el-row class="m-auto">
+                                    <el-button size="small" @click="openFileInput">Chọn tệp tin</el-button>
+                                    <input style="display: none" type="file" ref="fileInput" @change="handleFileChange" />
+                                </el-row>
+                                <img class="file-image" v-if="selectedFile" :src="selectedFileURL" />
+                                <img v-else class="file-image" :src="itemSync.avatar" />
+                                <el-button size="small" v-if="selectedFile" @click="cancelFileSelection">Hủy
+                                    chọn</el-button>
+                            </template>
+                        </el-form-item>
+
+                    </b-col>
+                    <b-col cols="6">
+                        <el-form-item label="Trạng thái:">
                             <template>
                                 <el-select v-model="itemSync.status" placeholder="Trạng thái:">
                                     <el-option v-for="item in options" :key="item.value" :label="item.label"
@@ -38,10 +51,10 @@
                                 </el-select>
                             </template>
                         </el-form-item>
-
-                    </b-col>
-                    <b-col cols="6">
-
+                        <el-form-item label="Mã định danh pet:" prop="id">
+                            <el-input class="group-name" placeholder="Vui lòng nhập mã định danh pet" v-model="itemSync.id">
+                            </el-input>
+                        </el-form-item>
                         <el-form-item label="Triệt sản:">
                             <template>
                                 <el-select v-model="itemSync.petTriet" placeholder="Triệt sản:">
@@ -223,6 +236,9 @@ export default {
     },
     data() {
         return {
+            file: "",
+            selectedFile: null,
+            selectedFileURL: "",
             itemSync: {
                 id: "",
                 status: 0,
@@ -235,7 +251,8 @@ export default {
                 petDob: "",
                 notes: "",
                 ownerId: 0,
-                siteId:1,
+                siteId: 1,
+                fileBase64: '',
             },
             rules: {
                 id: [
@@ -336,6 +353,48 @@ export default {
         }
     },
     methods: {
+        openFileInput() {
+            this.$refs.fileInput.click();
+        },
+        handleFileChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.file = file.name;
+                this.selectedFile = file;
+                this.selectedFileURL = URL.createObjectURL(file);
+                this.reduceQualityAndConvertToBase64(file);
+            }
+        },
+        reduceQualityAndConvertToBase64(file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob((blob) => {
+                        const reducedFile = new File([blob], file.name, { type: file.type });
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            this.itemSync.fileBase64 = reader.result;
+                        };
+                        reader.readAsDataURL(reducedFile);
+                    }, file.type, 0.7); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
+                };
+                img.src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        },
+        cancelFileSelection() {
+            this.file = "";
+            this.selectedFile = null;
+            this.selectedFileURL = "";
+            // Reset the file input value if needed
+            this.$refs.fileInput.value = "";
+        },
         handleClose(done) {
             // handle previous close
             this.onCancelHandler();

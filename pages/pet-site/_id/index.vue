@@ -7,8 +7,10 @@
                     <h3 class="title-content-pet">
                         Thông tin của thú cưng có mã định danh: {{ petSite.id }}
                     </h3>
-                    <b-col cols="2"></b-col>
-                    <b-col cols="12" md="5" lg="5" class="mt-5 text-center">
+                    <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
+                        <img :src=petSite.avatar alt="#" style="width: 100%">
+                    </b-col>
+                    <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
                         <ul class="field-list">
                             <li class="field-item">
                                 <span class="field-label">Trạng thái:</span>
@@ -78,7 +80,7 @@
                             </li>
                         </ul>
                     </b-col>
-                    <b-col cols="12" md="5" lg="5" class="mt-5 text-center">
+                    <b-col cols="12" md="4" lg="4" class="mt-5 text-center">
                         <ul class="field-list">
                             <li class="field-item">
                                 <span class="field-label-title">Thuộc chủ sở hữu</span>

@@ -105,8 +105,11 @@ export default {
         },
         '/shop': {
             target: process.env.API_BASE_URL,
-            //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
             pathRewrite: { '^/shop': '/api-site' },
+        },
+        '/global': {
+            target: process.env.API_BASE_URL,
+            pathRewrite: { '^/global': '/api' },
         },
     }
 
