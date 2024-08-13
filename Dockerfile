@@ -4,8 +4,12 @@ WORKDIR /app
 
 COPY . .
 
+RUN rm -rf node_modules/
+RUN rm -rf dist/
+
+COPY .env.example .env
 RUN yarn install
 
-EXPOSE 3000
+EXPOSE 8001
 
 CMD [ "yarn", "dev" ]
