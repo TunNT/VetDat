@@ -2,7 +2,14 @@
   <div class="login_container">
     <b-container fluid class="text-center">
       <b-row class="m-auto" style="width: 370px">
-        <HeaderPublic />
+        <nuxt-link to="/login-site">
+          <b-col
+            cols="12"
+            class="d-flex col-12 align-items-center justify-content-center mb-3"
+          >
+            <img class="img-header-login" src="../static/logo2.png">
+          </b-col>
+        </nuxt-link>
         <b-col cols="12">
           <el-form :model="formLogin" ref="formLogin" :rules="rules">
             <el-form-item prop="codeID">
@@ -52,43 +59,43 @@ import { mapActions, mapGetters } from "vuex";
 import _ from "lodash";
 export default {
   middleware({ store, redirect }) {
-    const user = store.getters["auth/me"];
-    if (!_.isEmpty(user)) {
-      return redirect("/card-deck-list");
+    const site = store.getters["auth-site/siteMe"];
+    if (!_.isEmpty(site)) {
+      return redirect("/pet-site");
     }
   },
   data() {
     return {
       formLogin: {
         codeID: "",
-        password: "",
+        password: ""
       },
       rules: {
         codeID: [
           {
             required: true,
-            message: "Vui lòng nhập email hoặc số điện thoại",
-            trigger: "blur",
-          },
+            message: "Vui lòng nhập tên đăng nhập",
+            trigger: "blur"
+          }
         ],
         password: [
           {
             required: true,
             message: "Vui lòng nhập mật khẩu",
-            trigger: "blur",
-          },
-        ],
+            trigger: "blur"
+          }
+        ]
       },
-      checked: false,
+      checked: false
     };
   },
   methods: {
     ...mapActions({
-      login: "auth/AUTH_LOGIN",
-      fetchCurrentUser: "auth/GET_ME",
+      login: "auth-site/AUTH_SITE_LOGIN",
+      fetchCurrentUser: "auth-site/GET_SITE_ME"
     }),
     onLoginHandler() {
-      this.$refs.formLogin.validate((valid) => {
+      this.$refs.formLogin.validate(valid => {
         if (valid) {
           this.login(this.formLogin)
             .then(({ error, data }) => {
@@ -97,39 +104,40 @@ export default {
                   group: "all",
                   title: "Đăng nhập thất bại",
                   type: "error",
-                  text: "Tên đăng nhập hoặc mật khẩu không đúng!",
+                  text: "Tên đăng nhập hoặc mật khẩu không đúng!"
                 });
               } else {
                 this.$notify({
                   group: "all",
                   title: "Đăng nhập thành công!",
-                  type: "success",
+                  type: "success"
                 });
-                this.$router.push("/card-deck-list");
+                this.$router.push("/pet-site");
+                this.$isLoading(false);
               }
             })
-            .catch((error) => {
+            .catch(error => {
               this.$notify({
                 group: "all",
                 title: "Đăng nhập thất bại",
                 type: "error",
-                text: "Tên đăng nhập hoặc mật khẩu không đúng!",
+                text: "Tên đăng nhập hoặc mật khẩu không đúng!"
               });
             });
         }
       });
-    },
+    }
   },
   computed: {
     ...mapGetters({
       loading: "auth/loading",
-      me: "auth/me",
-    }),
-  },
+      me: "auth/me"
+    })
+  }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 .login_container {
   margin: 0 auto;
   height: 100vh;
@@ -137,6 +145,9 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+  .img-header-login {
+    width: 300px;
+  }
 }
 
 .title {
@@ -148,6 +159,7 @@ export default {
   color: #35495e;
   letter-spacing: 1px;
 }
+
 .p_label {
   font-size: 14px;
 }

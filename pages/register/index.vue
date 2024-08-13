@@ -212,6 +212,6 @@ export default {
   font-size: 1.5rem;
 }
 .p_label {
-  font-size: 14px;
+  font-size: 16px;
 }
 </style>

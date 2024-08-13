@@ -11,6 +11,7 @@ export default {
         }
     },
     ssr: false,
+    target: 'static',
     // Global page headers: https://go.nuxtjs.dev/config-head
     head: {
         title: 'VetDat',
@@ -23,7 +24,11 @@ export default {
             { hid: 'description', name: 'description', content: '' }
         ],
         link: [
-            { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+            { rel: 'icon', type: 'image/x-icon', href: 'logo2.png' },
+            {
+                rel: "stylesheet",
+                href: "https://fonts.googleapis.com/css2?family=Coiny&display=swap",
+            },
         ]
     },
 
@@ -33,7 +38,11 @@ export default {
         '~/assets/css/main.css',
         '~/assets/css/main.scss'
     ],
-
+    googleFonts: {
+        families: {
+          Coiny:true,
+        }
+      },
     // Alias directory
     alias: {
         '@components': resolve(__dirname, './components'),
@@ -49,7 +58,7 @@ export default {
     ],
 
     router: {
-        middleware: "isValidToken",
+        middleware:['isValidTokenSite'],
     },
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -93,14 +102,22 @@ export default {
 
     server: {
         host: '0',
-        port: 8000
+        port: 8001
     },
 
     proxy: {
-        '/api/': {
+        '/admin': {
             target: process.env.API_BASE_URL,
             //target: process.env.NODE_ENV === 'production' ? process.env.API_BASE_URL : 'http://localhost:3000',
-            pathRewrite: { '^/api/': `${process.env.PREFIX_V1}` },
+            pathRewrite: { '^/admin': '/api-admin' },
+        },
+        '/shop': {
+            target: process.env.API_BASE_URL,
+            pathRewrite: { '^/shop': '/api-site' },
+        },
+        '/global': {
+            target: process.env.API_BASE_URL,
+            pathRewrite: { '^/global': '/api' },
         },
     }
 

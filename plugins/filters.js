@@ -1,4 +1,5 @@
 import Vue from "vue";
+import moment from 'moment';
 
 Vue.filter("ByUnkown", val => val || "Super Admin");
 
@@ -19,3 +20,14 @@ Vue.filter("RoleDisplay", val => {
       return "Admin";
   }
 });
+Vue.filter('FormatDay', val => {
+  if (val) {
+      return moment(String(val)).format('MM/DD/YYYY')
+  }
+});
+Vue.filter('FormatDate', val => {
+  if (val) {
+      return moment(String(val)).format('MM/DD/YYYY ss:mm:HH')
+  }
+});
+

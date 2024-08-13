@@ -51,11 +51,11 @@ export default {
     },
     submitText: {
       type: String,
-      default: "Xoá",
+      default: "Delete",
     },
     cancelText: {
       type: String,
-      default: "Huỷ",
+      default: "Cancel",
     },
     msgNotify: {
       type: String,
