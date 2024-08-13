@@ -24,7 +24,11 @@ export default {
             { hid: 'description', name: 'description', content: '' }
         ],
         link: [
-            { rel: 'icon', type: 'image/x-icon', href: 'logos.jpg' }
+            { rel: 'icon', type: 'image/x-icon', href: 'logo2.png' },
+            {
+                rel: "stylesheet",
+                href: "https://fonts.googleapis.com/css2?family=Coiny&display=swap",
+            },
         ]
     },
 
@@ -34,7 +38,11 @@ export default {
         '~/assets/css/main.css',
         '~/assets/css/main.scss'
     ],
-
+    googleFonts: {
+        families: {
+          Coiny:true,
+        }
+      },
     // Alias directory
     alias: {
         '@components': resolve(__dirname, './components'),
@@ -50,7 +58,7 @@ export default {
     ],
 
     router: {
-        middleware:['isValidToken','isValidTokenSite'],
+        middleware:['isValidTokenSite'],
     },
     // Auto import components: https://go.nuxtjs.dev/config-components
     components: true,
@@ -94,7 +102,7 @@ export default {
 
     server: {
         host: '0',
-        port: 8000
+        port: 8001
     },
 
     proxy: {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button size="mini" class="add-btn col-2" @click="redirectAdd">
+    <el-button size="mini" class="add-btn" @click="redirectAdd">
       <i class="el-icon-plus"></i>
       <span class="add-btn-text"> Thêm thú cưng</span>
     </el-button>
@@ -158,9 +158,6 @@
 .main-container {
   margin-top: 50px;
   text-align: center;
-  background-color: #f5f5f5;
-  box-shadow: 0px 0px 5px 1px #f1eaea;
-  padding: 50px;
 }
 .field-list {
   list-style: none;
@@ -188,11 +185,6 @@
 .search-pet .el-input__inner {
   height: 50px;
 }
-.el-header {
-  background-color: #b3c0d1;
-  color: #333;
-  line-height: 60px;
-}
 .btn-info {
   border: none;
   font-style: italic;
@@ -213,6 +205,11 @@
   line-height: 20px;
   color: #003049 !important;
   padding-left: 5px;
+}
+.el-table th > .cell {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 </style>
 

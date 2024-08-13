@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button size="mini" class="add-btn col-2" @click="redirectAdd">
+    <el-button size="mini" class="add-btn" @click="redirectAdd">
       <i class="el-icon-plus"></i>
       <span class="add-btn-text"> Thêm chủ sở hữu</span>
     </el-button>
@@ -71,9 +71,7 @@
           />
         </template>
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleInfor(scope.$index, scope.row)"
+          <el-button size="mini" @click="handleInfor(scope.$index, scope.row)"
             >Chi tiết</el-button
           >
           <el-button size="mini" @click="handleEdit(scope.$index, scope.row)"
@@ -118,11 +116,6 @@
   </div>
 </template>
 <style>
-.el-header {
-  background-color: #b3c0d1;
-  color: #333;
-  line-height: 60px;
-}
 .btn-info {
   border: none;
   font-style: italic;
@@ -138,7 +131,6 @@
 .add-btn span:hover {
   color: #333;
 }
-
 </style>
 
 <script>
@@ -195,13 +187,13 @@ export default {
           label: "hết hạn",
           value: 4
         }
-      ],
+      ]
     };
   },
   computed: {
     ...mapGetters({
       loading: "owner-site/loading",
-      ownerSites: "owner-site/ownerSites",
+      ownerSites: "owner-site/ownerSites"
     })
   },
   methods: {
@@ -209,7 +201,7 @@ export default {
       getOwnerSiteList: "owner-site/OWNER_SITE_LIST",
       createOwner: "owner-site/OWNER_SITE_CREATE",
       updateOwner: "owner-site/OWNER_SITE_UPDATE",
-      deleteOwner: "owner-site/OWNER_SITE_DELETE",
+      deleteOwner: "owner-site/OWNER_SITE_DELETE"
     }),
     onChangeHandler(val) {
       this.pagination.keyword = val;
@@ -227,25 +219,23 @@ export default {
     onSubmitAddHandler(value) {
       this.$isLoading(true);
       this.createOwner(value)
-        .then((result) => {
-          if (result.message ==="common_success") {
+        .then(result => {
+          if (result.message === "common_success") {
             this.$notify({
               group: "all",
               title: "Thêm thành công!",
-              type: "success",
+              type: "success"
             });
-            this.getOwnerSiteList(
-              _.pickBy(this.pagination, (value) => value)
-            );
+            this.getOwnerSiteList(_.pickBy(this.pagination, value => value));
             this.showAddOwnerDialog = false;
             this.$router.push("/owner-site");
-          } 
+          }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$notify({
             group: "all",
             title: `"chủ sở hữu"đã tồn tại`,
-            type: "error",
+            type: "error"
           });
         })
         .finally(() => {
@@ -256,29 +246,29 @@ export default {
     onSubmitEditHandler(value) {
       this.$isLoading(true);
       this.updateOwner(value)
-        .then((result) => {
-          if (result.message ==="common_success") {
-            this.getOwnerSiteList(_.pickBy(this.pagination, (value) => value));
+        .then(result => {
+          if (result.message === "common_success") {
+            this.getOwnerSiteList(_.pickBy(this.pagination, value => value));
             this.$notify({
               group: "all",
               title: "Cập nhật thành công",
-              type: "success",
+              type: "success"
             });
           } else {
             this.$notify({
               group: "all",
               title: "Cập nhật thất bại",
               type: "error",
-              text: error,
+              text: error
             });
           }
         })
-        .catch((error) => {
+        .catch(error => {
           this.$notify({
             group: "all",
             title: "Cập nhật thất bại",
             type: "error",
-            text: error,
+            text: error
           });
         })
         .finally(() => {
@@ -286,7 +276,7 @@ export default {
           this.$isLoading(false);
         });
     },
-    handleInfor(_,row) {
+    handleInfor(_, row) {
       this.selectedOwner = row;
       this.showDetailDialog = true;
     },

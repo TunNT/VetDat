@@ -14,7 +14,7 @@
             py-2
           "
         >
-          <span v-show="!isCollapse">VetDat</span>
+          <img v-if="!isCollapse" class="img-header-private" src="../static/logo2.png">
         </div>
       </nuxt-link>
       <el-menu
@@ -30,37 +30,15 @@
         <el-submenu class="private-layout__menu-bar__submenu" index="1">
           <template slot="title">
             <i class="el-icon-menu"></i>
-            <span slot="title"> Quản lí </span>
+            <span class="title-sidebar" slot="title"> Quản lí </span>
           </template>
-          <nuxt-link v-if="isAdmin" to="/site">
-            <el-menu-item index="1-1"> Site </el-menu-item>
-          </nuxt-link>
-          <nuxt-link v-if="isAdmin" to="/pet">
-            <el-menu-item index="1-2"> Thú cưng </el-menu-item>
-          </nuxt-link>
-          <nuxt-link v-if="isAdmin" to="/owner" name="card">
-            <el-menu-item index="1-3"> Chủ sở hữu </el-menu-item>
-          </nuxt-link>
           <nuxt-link v-if="isSite" to="/pet-site">
-            <el-menu-item index="1-4"> Thú cưng </el-menu-item>
+            <el-menu-item class="title-sidebar-item" index="1-4"> Thú cưng </el-menu-item>
           </nuxt-link>
           <nuxt-link v-if="isSite" to="/owner-site" name="card">
-            <el-menu-item index="1-5"> Chủ sở hữu </el-menu-item>
+            <el-menu-item class="title-sidebar-item" index="1-5"> Chủ sở hữu </el-menu-item>
           </nuxt-link>
         </el-submenu>
-        <!-- <el-submenu class="private-layout__menu-bar__submenu" index="2">
-          <template slot="title">
-            <i class="el-icon-menu"></i>
-            <span slot="title"> Quản lí (Site)</span>
-          </template>
-          <nuxt-link to="/pet-site">
-            <el-menu-item index="2-1"> Thú cưng </el-menu-item>
-          </nuxt-link>
-          <nuxt-link to="/owner-site" name="card">
-            <el-menu-item index="2-2"> Chủ sở hữu </el-menu-item>
-          </nuxt-link>
-        </el-submenu> -->
-      
       </el-menu>
     </el-aside>
 
@@ -76,12 +54,16 @@
           <el-dropdown trigger="click" @command="handleCommand">
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item command="info"
-                ></el-dropdown-item
+              <el-dropdown-item command="info"></el-dropdown-item>
+              <el-dropdown-item v-if="isAdmin" command="logout"
+                >Thoát</el-dropdown-item
               >
-              <el-dropdown-item v-if="isAdmin" command="logout">Thoát</el-dropdown-item>
-              <el-dropdown-item v-else-if="isSite" command="logoutSite">Thoát</el-dropdown-item>
-              <el-dropdown-item v-else command="logoutEmpty">Thoát</el-dropdown-item>
+              <el-dropdown-item v-else-if="isSite" command="logoutSite"
+                >Thoát</el-dropdown-item
+              >
+              <el-dropdown-item v-else command="logoutEmpty"
+                >Thoát</el-dropdown-item
+              >
             </el-dropdown-menu>
           </el-dropdown>
         </div>
@@ -96,7 +78,7 @@
 </template>
 <style>
 .el-header {
-  background-color: #b3c0d1;
+  background-color: rgb(0, 21, 41);
   color: #333;
   line-height: 60px;
 }
@@ -118,7 +100,7 @@ export default {
       isCollapse: false,
       activedMenu: "1-1",
       activedMenuSite: "1-3",
-      windowWidth: 0,
+      windowWidth: 0
     };
   },
   computed: {
@@ -132,7 +114,7 @@ export default {
     },
     isSite() {
       return this.site === this.SITE_ROLE;
-    },
+    }
   },
   watch: {
     windowWidth(val) {
@@ -141,7 +123,7 @@ export default {
       } else if (val > 1199 && this.isCollapse === true) {
         this.isCollapse = false;
       }
-    },
+    }
   },
   methods: {
     handleCommand(command) {
@@ -152,7 +134,7 @@ export default {
           return;
         case "logoutSite":
           this.$store.dispatch("auth-site/AUTH_SITE_LOGOUT");
-          this.$router.push("/login-site");
+          this.$router.push("/");
           return;
         case "logoutEmpty":
           this.$router.push("/");
@@ -163,13 +145,13 @@ export default {
     },
     getWindowWidth(event) {
       this.windowWidth = document.documentElement.clientWidth;
-    },
+    }
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.getWindowWidth);
   },
   mounted() {
-    this.$nextTick(function () {
+    this.$nextTick(function() {
       window.addEventListener("resize", this.getWindowWidth);
 
       //Init
@@ -179,13 +161,16 @@ export default {
   created() {
     const { name } = this.$route;
     this.activedMenu = this.$helpers.routerActived(name);
-  },
+  }
 };
 </script>
 
 <style lang="scss">
 .private-layout {
   transition: 0.3s;
+  .img-header-private {
+    width: 175px;
+  }
   a {
     &:hover {
       text-decoration: none !important;
@@ -206,9 +191,13 @@ export default {
   &__menu-bar {
     border-right: none !important;
     &__submenu {
+      .title-sidebar {
+        font-size: 16px;
+      }
       .el-menu-item:not(.is-active) {
         background-color: #000c17 !important;
         color: grey !important;
+        font-size: 16px;
         &:hover {
           color: #fff !important;
         }
@@ -220,8 +209,8 @@ export default {
   }
   &__header {
     justify-content: space-between;
-    font-size: 12px;
-    height: 52px !important;
+    font-size: 16px;
+    height: 70px !important;
     &--collapse {
       background: transparent;
       border: none;
