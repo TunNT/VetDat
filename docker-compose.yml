@@ -1,6 +1,7 @@
+
 version: '3'
 services:
   app:
-    image: vet-dat
+    build: .
     ports:
-      - 3000:3000
+      - 4001:8001
