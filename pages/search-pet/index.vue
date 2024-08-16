@@ -5,10 +5,11 @@
         <img class="header-logo" src="../../static/logo2.png" alt="#" />
         <span>Cổng tìm kiếm thông tin thú cưng</span>
         <SearchInput
-          :placeholder="'Nhập để tìm kiếm'"
+          :placeholder="'Nhập PetID bằng số để tìm kiếm'"
           :clearable="true"
           :size="'default'"
           :typeInput="true"
+          :idElement="'id-search-pet'"
           class="search-pet"
           @onChangeHandler="onChangeHandler"
         />
@@ -127,7 +128,13 @@ export default {
         ...this.pagination,
         ...sort
       };
+    },
+    autoFocusInput() {
+      document.getElementById('id-search-pet').focus();
     }
+  },
+  mounted: function() {
+     this.autoFocusInput();
   },
   watch: {
     pagination: {
