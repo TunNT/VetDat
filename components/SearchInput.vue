@@ -9,6 +9,7 @@
     :disabled="disabled"
     :label="label"
     :clearable="clearable"
+    :id="idElement"
     @input="onInputHandler"
     @clear="clearable ? onClearHandler : () => {}"
     @change="$emit('onChangeHandler', $event)"
@@ -21,6 +22,10 @@
 export default {
   props: {
     label: {
+      type: String,
+      default: ""
+    },
+     idElement: {
       type: String,
       default: ""
     },

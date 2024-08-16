@@ -367,7 +367,7 @@ export default {
         .catch(error => {
           this.$notify({
             group: "all",
-            title: `"Thú cưng"đã tồn tại`,
+            title: `Bạn phải nhập PetID bằng số và lớn hơn 9 ký tự hoặc "Thú cưng"đã tồn tại`,
             type: "error"
           });
         })
