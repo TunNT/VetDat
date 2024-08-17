@@ -22,9 +22,11 @@
               <el-input v-model="file"></el-input>
               <template>
                 <el-row class="m-auto">
-                  <el-button size="small" @click="openFileInput">Chọn tệp tin</el-button>
+                  <el-button size="small" @click="openFileInput"
+                    >Chọn tệp tin</el-button
+                  >
                   <input
-                  style="display: none"
+                    style="display: none"
                     type="file"
                     ref="fileInput"
                     @change="handleFileChange"
@@ -44,7 +46,6 @@
                 >
               </template>
             </el-form-item>
-          
           </b-col>
           <b-col cols="6" class="layout-input">
             <el-form-item label="Mã định danh pet:" prop="id">
@@ -56,7 +57,10 @@
               </el-input>
             </el-form-item>
 
-            <el-form-item label="Chủ sở hữu:" :rules="[{ required: true, message: 'Vui lòng chọn chủ sở hữu' }]">
+            <el-form-item
+              label="Chủ sở hữu:"
+              :rules="[{ required: true, message: 'Vui lòng chọn chủ sở hữu' }]"
+            >
               <template>
                 <el-select v-model="itemSync.ownerId" placeholder="Chủ sở hữu:">
                   <el-option
@@ -177,9 +181,7 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button class="btn-cancel-group" @click="onCancelHandler"
-          >Hủy</el-button
-        >
+        <el-button class="btn-cancel-group" @click="handleClose">Hủy</el-button>
         <el-button class="btn-add-group" @click="onPreviousSubmit"
           >Tạo pet</el-button
         >
@@ -317,7 +319,7 @@ export default {
         petDob: "",
         notes: "",
         ownerId: 0,
-        fileBase64: '',
+        fileBase64: ""
       },
       rules: {
         id: [
@@ -425,42 +427,56 @@ export default {
     },
     reduceQualityAndConvertToBase64(file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = event => {
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
           canvas.width = img.width;
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
-          canvas.toBlob((blob) => {
-            const reducedFile = new File([blob], file.name, { type: file.type });
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              this.itemSync.fileBase64 = reader.result;
-            };
-            reader.readAsDataURL(reducedFile);
-          }, file.type, 0.7); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
+          canvas.toBlob(
+            blob => {
+              const reducedFile = new File([blob], file.name, {
+                type: file.type
+              });
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                this.itemSync.fileBase64 = reader.result;
+              };
+              reader.readAsDataURL(reducedFile);
+            },
+            file.type,
+            0.7
+          ); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
         };
         img.src = event.target.result;
       };
       reader.readAsDataURL(file);
     },
     cancelFileSelection() {
-      this.$set(this, 'file', '');
+      this.$set(this, "file", "");
       this.selectedFile = null;
-      this.selectedFileURL = '';
+      this.selectedFileURL = "";
       // Reset the file input value if needed
-      this.$refs.fileInput.value = '';
-        },
+      this.$refs.fileInput.value = "";
+    },
+    resetFile() {
+      this.file = "";
+      this.selectedFile = null;
+      this.selectedFileURL = "";
+      // Reset the file input value if needed
+      this.$refs.fileInput.value = "";
+    },
     handleClose(done) {
-      // handle previous close
+      this.resetFile();
       this.onCancelHandler();
     },
     onPreviousSubmit() {
       this.$refs.updateForm.validate(valid => {
         if (valid) this.onSubmitHandler(this.itemSync);
       });
+      this.resetFile();
     }
   }
 };

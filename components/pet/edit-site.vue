@@ -22,7 +22,9 @@
               <el-input v-model="file"></el-input>
               <template>
                 <el-row class="m-auto">
-                  <el-button size="small" @click="openFileInput">Chọn tệp tin</el-button>
+                  <el-button size="small" @click="openFileInput"
+                    >Chọn tệp tin</el-button
+                  >
                   <input
                     style="display: none"
                     type="file"
@@ -35,11 +37,7 @@
                   v-if="selectedFile"
                   :src="selectedFileURL"
                 />
-                <img
-                  v-else
-                  class="file-image"
-                  :src="itemSync.avatar"
-                />
+                <img v-else class="file-image" :src="itemSync.avatar" />
                 <el-button
                   size="small"
                   v-if="selectedFile"
@@ -140,7 +138,6 @@
               >
               </el-date-picker>
             </el-form-item>
-
           </b-col>
         </b-row>
 
@@ -170,12 +167,9 @@
           >
           </el-input>
         </el-form-item>
-
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button class="btn-cancel-group" @click="onCancelHandler"
-          >Hủy</el-button
-        >
+        <el-button class="btn-cancel-group" @click="handleClose">Hủy</el-button>
         <el-button class="btn-add-group" @click="onPreviousSubmit"
           >Xác nhận</el-button
         >
@@ -185,8 +179,8 @@
 </template>
 <style>
 .file-image {
-  max-width: 100%; 
-  margin-top: 15px
+  max-width: 100%;
+  margin-top: 15px;
 }
 .btn-cancel-group {
   background-color: #f5f5f5;
@@ -321,7 +315,7 @@ export default {
         petName: "",
         petDob: "",
         ownerId: "",
-        fileBase64: '',
+        fileBase64: ""
       },
       rules: {
         id: [
@@ -422,22 +416,28 @@ export default {
     },
     reduceQualityAndConvertToBase64(file) {
       const reader = new FileReader();
-      reader.onload = (event) => {
+      reader.onload = event => {
         const img = new Image();
         img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const ctx = canvas.getContext('2d');
+          const canvas = document.createElement("canvas");
+          const ctx = canvas.getContext("2d");
           canvas.width = img.width;
           canvas.height = img.height;
           ctx.drawImage(img, 0, 0);
-          canvas.toBlob((blob) => {
-            const reducedFile = new File([blob], file.name, { type: file.type });
-            const reader = new FileReader();
-            reader.onloadend = () => {
-              this.itemSync.fileBase64 = reader.result;
-            };
-            reader.readAsDataURL(reducedFile);
-          }, file.type, 0.7); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
+          canvas.toBlob(
+            blob => {
+              const reducedFile = new File([blob], file.name, {
+                type: file.type
+              });
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                this.itemSync.fileBase64 = reader.result;
+              };
+              reader.readAsDataURL(reducedFile);
+            },
+            file.type,
+            0.7
+          ); // Điều chỉnh chất lượng ở đây (0.7 là 70% chất lượng)
         };
         img.src = event.target.result;
       };
@@ -450,14 +450,22 @@ export default {
       // Reset the file input value if needed
       this.$refs.fileInput.value = "";
     },
+    resetFile() {
+      this.file = "";
+      this.selectedFile = null;
+      this.selectedFileURL = "";
+      // Reset the file input value if needed
+      this.$refs.fileInput.value = "";
+    },
     handleClose(done) {
-      // handle previous close
+      this.resetFile();
       this.onCancelHandler();
     },
     onPreviousSubmit() {
       this.$refs.updateForm.validate(valid => {
         if (valid) this.onSubmitHandler(this.itemSync);
       });
+      this.resetFile();
     }
   }
 };
