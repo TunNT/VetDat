@@ -384,7 +384,7 @@ export default {
         file,
         avatar,
         createdAt,
-        owner,
+        ownerId: owner,
         updatedAt,
         statusDate,
         ...newValue
