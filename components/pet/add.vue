@@ -307,6 +307,8 @@ export default {
       file: "",
       selectedFile: null,
       selectedFileURL: "",
+      MAX_HEIGHT: 400,
+      MAX_WIDTH: 400,
       itemSync: {
         id: "",
         status: 0,
@@ -430,11 +432,16 @@ export default {
       reader.onload = event => {
         const img = new Image();
         img.onload = () => {
+          // Tính toán tỷ lệ co giãn
+          const ratio = Math.min(
+            this.MAX_HEIGHT / img.width,
+            this.MAX_WIDTH / img.height
+          );
           const canvas = document.createElement("canvas");
           const ctx = canvas.getContext("2d");
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0);
+          canvas.width = img.width * ratio;
+          canvas.height = img.height * ratio;
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
           canvas.toBlob(
             blob => {
               const reducedFile = new File([blob], file.name, {
