@@ -34,22 +34,25 @@
                   </div>
                 </div></div
             ></b-col>
-            <b-col cols="12" md="6" lg="6" >
+            <b-col cols="12" md="6" lg="6">
               <div class="content-right">
                 <div class="pet-layout">
                   <div class="pet-header">{{ pets.petName }}</div>
                   <div class="pet-desc-id">ID: {{ pets.id }}</div>
                 </div>
                 <div class="pet-layout">
-                  <div class="pet-desc-mid">{{
-                    pets.petType === 0
-                      ? "Không xác định"
-                      : pets.petType === 1
-                      ? "Chó"
-                      : pets.petType === 3
-                      ? "Mèo"
-                      : "Thỏ"
-                  }} {{ pets.petBreed }} - {{ pets.petColor }}</div>
+                  <div class="pet-desc-mid">
+                    {{
+                      pets.petType === 0
+                        ? "Không xác định"
+                        : pets.petType === 1
+                        ? "Chó"
+                        : pets.petType === 2
+                        ? "Mèo"
+                        : "Thỏ"
+                    }}
+                    {{ pets.petBreed }} - {{ pets.petColor }}
+                  </div>
                   <div class="pet-desc-mid">
                     Giới tính:
                     {{
@@ -58,7 +61,9 @@
                         : pets.petSex === 1
                         ? "Đực"
                         : "Cái"
-                    }} - {{
+                    }}
+                    -
+                    {{
                       pets.petTriet === 0
                         ? "Không xác định"
                         : pets.petTriet === 1
@@ -71,8 +76,12 @@
                   </div>
                 </div>
                 <div class="pet-layout">
-                  <div class="pet-desc-bot">Nơi đăng ký: {{ pets.site.name }}</div>
-                  <div class="pet-desc-bot">Địa chỉ: {{ pets.site.address }}</div>
+                  <div class="pet-desc-bot">
+                    Nơi đăng ký: {{ pets.site.name }}
+                  </div>
+                  <div class="pet-desc-bot">
+                    Địa chỉ: {{ pets.site.address }}
+                  </div>
                   <div class="pet-desc-bot">SĐT: {{ pets.site.phone }}</div>
                 </div>
               </div>
@@ -130,11 +139,11 @@ export default {
       };
     },
     autoFocusInput() {
-      document.getElementById('id-search-pet').focus();
+      document.getElementById("id-search-pet").focus();
     }
   },
   mounted: function() {
-     this.autoFocusInput();
+    this.autoFocusInput();
   },
   watch: {
     pagination: {
@@ -189,14 +198,14 @@ export default {
   margin-top: 30px;
   .bachkground-row {
     height: 8px;
-    background-color: #68BDE1;
+    background-color: #68bde1;
   }
   .header-id {
     height: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #A02334;
+    background-color: #a02334;
     color: #e7aaaa;
     border-top-left-radius: 35px;
     border-top-right-radius: 35px;
@@ -209,7 +218,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: #A02334;
+    background-color: #a02334;
     color: #e7aaaa;
     border-bottom-left-radius: 35px;
     border-bottom-right-radius: 35px;
@@ -218,7 +227,7 @@ export default {
     font-weight: 600;
   }
   .container-content {
-    background-color: #1F316F;
+    background-color: #1f316f;
     .content-left {
       display: flex;
       flex-direction: column;
@@ -236,7 +245,7 @@ export default {
         align-items: center;
         width: 380px;
         height: 380px;
-        background-color: #FFAD60;
+        background-color: #ffad60;
         border-radius: 50%;
         .cicle-border {
           flex-direction: column;
@@ -245,7 +254,7 @@ export default {
           align-items: center;
           width: 370px;
           height: 370px;
-          background-color: #68BDE1;
+          background-color: #68bde1;
           border-radius: 50%;
           .cicle-img {
             width: 360px;
@@ -263,30 +272,30 @@ export default {
       align-items: flex-start;
       .pet-layout {
         display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
       }
       .pet-header {
         font-family: "Coiny", cursive !important;
         font-size: 50px;
-        color: #FFAD60;
+        color: #ffad60;
         font-weight: 700;
       }
       .pet-desc-id {
-        color: #FFEEAD;
+        color: #ffeead;
         font-size: 22px;
         font-weight: 600;
         font-family: "Coiny", cursive !important;
       }
       .pet-desc-mid {
-        color: #FFEEAD;
+        color: #ffeead;
         font-size: 22px;
         font-weight: 600;
         font-family: serif;
       }
       .pet-desc-bot {
-        color: #FFEEAD;
+        color: #ffeead;
         font-size: 22px;
         font-weight: 600;
         font-family: cursive;
@@ -325,7 +334,7 @@ export default {
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     &:hover {
-      border-color: #C0C4CC;
+      border-color: #c0c4cc;
       box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     }
   }
@@ -366,13 +375,13 @@ export default {
 }
 @media only screen and (max-width: 768px) {
   .search-pet {
-  margin-top: 50px;
-  width: 100%;
-  height: 50px;
-  ::v-deep .el-input__inner {
+    margin-top: 50px;
+    width: 100%;
     height: 50px;
+    ::v-deep .el-input__inner {
+      height: 50px;
+    }
   }
-}
   .main-container {
     .container-content {
       .content-size {
