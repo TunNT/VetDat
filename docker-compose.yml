@@ -4,4 +4,4 @@ services:
   app:
     build: .
     ports:
-      - 4001:8001
+      - 80:8001
