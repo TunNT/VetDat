@@ -192,20 +192,6 @@
 .el-aside {
   color: #333;
 }
-.header-title-pet {
-  text-align: center;
-  margin-top: 25px;
-}
-.header-title-pet span {
-  width: 58px;
-  font-family: "Montserrat";
-  font-style: normal;
-  font-weight: 700 !important;
-  font-size: 30px;
-  line-height: 20px;
-  color: #003049 !important;
-  padding-left: 5px;
-}
 .el-table th > .cell {
   overflow: hidden;
   white-space: nowrap;
